@@ -1,8 +1,6 @@
 package com.maxmakarov.gallery.ui.gallery.list
 
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +11,7 @@ import coil.load
 import com.maxmakarov.gallery.R
 import com.maxmakarov.gallery.model.UnsplashPhoto
 
-//todo use ViewBinding as an argument for a convinience
+//todo use ViewBinding as an argument for a convenience
 class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.ViewHolder(view) {
     private val photoView: AspectRatioImageView = view.findViewById(R.id.photo)
     private val photographerView: TextView = view.findViewById(R.id.photographer)
@@ -37,7 +35,7 @@ class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.V
 
             photoView.aspectRatio = photo.height.toDouble() / photo.width.toDouble()
             photoView.setBackgroundColor(Color.parseColor(photo.color))
-            photoView.load(photo.urls.small) {
+            photoView.load(photo.urls.regular) {
                 crossfade(true)
             }
 

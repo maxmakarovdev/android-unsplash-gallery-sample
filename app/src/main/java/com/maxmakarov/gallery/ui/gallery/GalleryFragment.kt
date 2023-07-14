@@ -1,8 +1,8 @@
 package com.maxmakarov.gallery.ui.gallery
 
-import android.annotation.SuppressLint
-import android.content.res.Configuration
+import android.content.Intent
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.LazyThreadSafetyMode.NONE
 
+
 class GalleryFragment : Fragment() {
 
     private lateinit var binding: GalleryFragmentBinding
@@ -41,15 +42,16 @@ class GalleryFragment : Fragment() {
     private lateinit var layoutManager: StaggeredGridLayoutManager
     private val adapterCallback = object : PhotoViewHolder.PhotoClickCallback {
         override fun onClick(photo: UnsplashPhoto) {
-            //todo make a built-in fullscreen photo viewer
-//                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-//                view.context.startActivity(intent)
+            val intent = Intent()
+            intent.action = Intent.ACTION_VIEW
+            intent.setDataAndType(Uri.parse(photo.urls.full), "image/*")
+            startActivity(intent)
         }
 
         override fun onLongClick(photo: UnsplashPhoto) {
-            TODO("Not yet implemented")
+            //todo
+            Toast.makeText(requireActivity(), "Long clicked", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     override fun onCreateView(
@@ -80,7 +82,8 @@ class GalleryFragment : Fragment() {
         uiActions: (UiAction) -> Unit
     ) {
         photosAdapter = PhotosAdapter(adapterCallback)
-        layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+        val spanCount = if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) 3 else 2
+        layoutManager = StaggeredGridLayoutManager(spanCount, LinearLayoutManager.VERTICAL)
         list.adapter = photosAdapter
         list.layoutManager = layoutManager
 
@@ -164,13 +167,5 @@ class GalleryFragment : Fragment() {
                 }
             }
         }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        // we want the recycler view to have 3 columns when in landscape and 2 in portrait
-        layoutManager.spanCount = if (newConfig.orientation == ORIENTATION_LANDSCAPE) 3 else 2
-        photosAdapter.notifyDataSetChanged()
     }
 }

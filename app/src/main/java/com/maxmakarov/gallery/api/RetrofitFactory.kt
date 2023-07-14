@@ -11,19 +11,20 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 /**
  * Factory for manual DI to avoid sticking to a specific DI library.
+ * //todo maybe Hilt will be implemented
  */
-//todo maybe Hilt will be implemented
 object RetrofitFactory {
 
-    private const val CONTENT_TYPE = "Content-Type"
-    private const val APPLICATION_JSON = "application/json"
-    private const val ACCEPT_VERSION = "Accept-Version"
+    private const val HEADER_CONTENT_TYPE = "Content-Type"
+    private const val HEADER_ACCEPT_VERSION = "Accept-Version"
+    private const val HEADER_AUTHORIZATION = "Authorization"
 
     private fun createHeaderInterceptor(): Interceptor {
         return Interceptor { chain ->
             val newRequest = chain.request().newBuilder()
-                .addHeader(CONTENT_TYPE, APPLICATION_JSON)
-                .addHeader(ACCEPT_VERSION, "v1")
+                .addHeader(HEADER_CONTENT_TYPE, "application/json")
+                .addHeader(HEADER_ACCEPT_VERSION, "v1")
+                .addHeader(HEADER_AUTHORIZATION, "Client-ID ${Config.accessKey}")
                 .build()
             chain.proceed(newRequest)
         }
