@@ -1,15 +1,19 @@
 package com.maxmakarov.gallery.model
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Entity(tableName = "favorites")
 data class UnsplashPhoto(
-    val id: String,
+    @PrimaryKey val id: String,
     val created_at: String,
     val width: Int,
     val height: Int,
-    val color: String? = "#000000",
+    val color: String?,
+    val blur_hash: String,
     val likes: Int,
     val description: String?,
     val urls: UnsplashUrls,

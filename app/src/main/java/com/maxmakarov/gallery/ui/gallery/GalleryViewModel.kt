@@ -1,6 +1,5 @@
 package com.maxmakarov.gallery.ui.gallery
 
-import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
@@ -11,6 +10,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.maxmakarov.gallery.data.PhotosRepository
+import com.maxmakarov.gallery.db.PhotoDatabase
 import com.maxmakarov.gallery.model.UnsplashPhoto
 import com.maxmakarov.gallery.ui.gallery.model.DEFAULT_QUERY
 import com.maxmakarov.gallery.ui.gallery.model.UiAction
@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
@@ -84,10 +85,20 @@ class GalleryViewModel(
         repository.loadPhotosStream()
             .map { pagingData -> pagingData.map { UiModel.PhotoItem(it) } }
 
+    //todo this will be moved to image view screen's viewmodel
+    fun favoriteClicked(photo: UnsplashPhoto) {
+        viewModelScope.launch {
+            repository.checkPhotoIsAdded(photo)
+                .flatMapLatest { isAdded ->
+                    repository.run { if(isAdded) removeFromFavorites(photo) else addToFavorites(photo)}
+                }
+                .collect()
+        }
+    }
+
     /**
-     * To abide by the API guidelines,
-     * you need to trigger a GET request to this endpoint every time your application performs a download of a photo
-     *
+     * To abide by the API guidelines, you need to trigger a GET request to this endpoint
+     * every time your application performs a download of a photo
      * @param photos the list of selected photos
      */
     //todo track downloads
@@ -106,7 +117,7 @@ class GalleryViewModel(
                     modelClass: Class<T>,
                     handle: SavedStateHandle
                 ): T {
-                    val repository = PhotosRepository.create()
+                    val repository = PhotosRepository.create(PhotoDatabase.getInstance(fragment.requireContext()))
                     if (modelClass.isAssignableFrom(GalleryViewModel::class.java)) {
                         @Suppress("UNCHECKED_CAST")
                         return GalleryViewModel(repository, handle) as T
