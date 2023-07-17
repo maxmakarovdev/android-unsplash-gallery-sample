@@ -11,17 +11,15 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.maxmakarov.gallery.data.PhotosRepository
 import com.maxmakarov.gallery.db.PhotoDatabase
-import com.maxmakarov.gallery.model.UnsplashPhoto
 import com.maxmakarov.gallery.ui.gallery.model.DEFAULT_QUERY
 import com.maxmakarov.gallery.ui.gallery.model.UiAction
 import com.maxmakarov.gallery.ui.gallery.model.UiModel
 import com.maxmakarov.gallery.ui.gallery.model.UiState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
@@ -30,10 +28,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class GalleryViewModel(
-    private val repository: PhotosRepository,
-    private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+@OptIn(ExperimentalCoroutinesApi::class)
+class GalleryViewModel(private val repository: PhotosRepository) : ViewModel() {
 
     /**
      * Stream of immutable states representative of the UI.
@@ -55,17 +51,13 @@ class GalleryViewModel(
             .onStart { emit(UiAction.Search(query = DEFAULT_QUERY)) }
 
         pagingDataFlow = searches
-            .debounce(500)
             .flatMapLatest {
                 if (it.query.isBlank()) loadPhotos() else searchPhotos(queryString = it.query)
             }
             .cachedIn(viewModelScope)
 
-        state = searches.map { search ->
-                UiState(
-                    query = search.query
-                )
-            }
+        state = searches
+            .map { search -> UiState(query = search.query) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
@@ -85,31 +77,7 @@ class GalleryViewModel(
         repository.loadPhotosStream()
             .map { pagingData -> pagingData.map { UiModel.PhotoItem(it) } }
 
-    //todo this will be moved to image view screen's viewmodel
-    fun favoriteClicked(photo: UnsplashPhoto) {
-        viewModelScope.launch {
-            repository.checkPhotoIsAdded(photo)
-                .flatMapLatest { isAdded ->
-                    repository.run { if(isAdded) removeFromFavorites(photo) else addToFavorites(photo)}
-                }
-                .collect()
-        }
-    }
-
-    /**
-     * To abide by the API guidelines, you need to trigger a GET request to this endpoint
-     * every time your application performs a download of a photo
-     * @param photos the list of selected photos
-     */
-    //todo track downloads
-    fun trackDownloads(photos: ArrayList<UnsplashPhoto>) {
-        for (photo in photos) {
-            repository.trackDownload(photo.links.download_location)
-        }
-    }
-
     companion object {
-        //todo simplify
         fun get(fragment: Fragment): GalleryViewModel {
             val factory = object : AbstractSavedStateViewModelFactory(fragment, null){
                 override fun <T : ViewModel> create(
@@ -119,8 +87,7 @@ class GalleryViewModel(
                 ): T {
                     val repository = PhotosRepository.create(PhotoDatabase.getInstance(fragment.requireContext()))
                     if (modelClass.isAssignableFrom(GalleryViewModel::class.java)) {
-                        @Suppress("UNCHECKED_CAST")
-                        return GalleryViewModel(repository, handle) as T
+                        return GalleryViewModel(repository) as T
                     }
                     throw IllegalArgumentException("Unknown ViewModel class")
                 }

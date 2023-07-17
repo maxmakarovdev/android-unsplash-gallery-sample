@@ -4,8 +4,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.maxmakarov.gallery.R
@@ -16,23 +14,16 @@ import com.maxmakarov.gallery.ui.utils.BlurHashDecoder
 //todo use ViewBinding as an argument for a convenience
 class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.ViewHolder(view) {
     private val photoView: AspectRatioImageView = view.findViewById(R.id.photo)
-    private val photographerView: TextView = view.findViewById(R.id.photographer)
     private var photo: UnsplashPhoto? = null
 
     init {
         view.setOnClickListener {
             photo?.also { callback.onClick(it) }
         }
-        view.setOnLongClickListener {
-            photo?.also { callback.onLongClick(it) }
-            true
-        }
     }
 
     fun bind(photo: UnsplashPhoto?) {
-        if (photo == null) {
-            photographerView.visibility = View.GONE
-        } else {
+        if (photo != null) {
             this.photo = photo
 
             photoView.aspectRatio = photo.height.toDouble() / photo.width.toDouble()
@@ -41,9 +32,6 @@ class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.V
                 placeholder(BitmapDrawable(photoView.resources, bitmap))
                 crossfade(true)
             }
-
-            photographerView.isVisible = true
-            photographerView.text = photo.user.name
         }
     }
 
@@ -56,6 +44,5 @@ class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.V
 
     interface PhotoClickCallback {
         fun onClick(photo: UnsplashPhoto)
-        fun onLongClick(photo: UnsplashPhoto)
     }
 }

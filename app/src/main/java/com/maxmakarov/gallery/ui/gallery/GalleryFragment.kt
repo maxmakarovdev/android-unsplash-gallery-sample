@@ -1,8 +1,6 @@
 package com.maxmakarov.gallery.ui.gallery
 
-import android.content.Intent
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -12,6 +10,8 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.core.view.marginTop
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +29,7 @@ import com.maxmakarov.gallery.ui.gallery.list.PhotosAdapter
 import com.maxmakarov.gallery.ui.gallery.model.UiAction
 import com.maxmakarov.gallery.ui.gallery.model.UiModel
 import com.maxmakarov.gallery.ui.gallery.model.UiState
+import com.maxmakarov.gallery.ui.imageview.FullscreenImageFragment.Companion.ARG_PHOTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -48,14 +49,16 @@ class GalleryFragment : BaseFragment<GalleryFragmentBinding>() {
     private lateinit var layoutManager: StaggeredGridLayoutManager
     private val adapterCallback = object : PhotoViewHolder.PhotoClickCallback {
         override fun onClick(photo: UnsplashPhoto) {
-            viewModel.favoriteClicked(photo)
-        }
-
-        override fun onLongClick(photo: UnsplashPhoto) {
-            val intent = Intent()
-            intent.action = Intent.ACTION_VIEW
-            intent.setDataAndType(Uri.parse(photo.urls.full), "image/*")
-            startActivity(intent)
+            findNavController().navigate(
+                R.id.action_navigation_gallery_to_navigation_imageview,
+                Bundle().apply { putParcelable(ARG_PHOTO, photo) },
+                navOptions {
+                    anim {
+                        enter = android.R.animator.fade_in
+                        exit = android.R.animator.fade_out
+                    }
+                }
+            )
         }
     }
 

@@ -17,47 +17,39 @@ class PhotosRepository(
     private val service: UnsplashService,
     private val database: PhotoDatabase
 ) {
+    private val defaultConfig = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false)
 
     fun loadPhotosStream(): Flow<PagingData<UnsplashPhoto>> {
         return Pager(
-            config = PagingConfig(
-                pageSize = PAGE_SIZE,
-                enablePlaceholders = false
-            ),
+            config = defaultConfig,
             pagingSourceFactory = { LoadPhotoPagingSource(service) }
         ).flow
     }
 
     fun searchPhotosStream(query: String): Flow<PagingData<UnsplashPhoto>> {
         return Pager(
-            config = PagingConfig(
-                pageSize = PAGE_SIZE,
-                enablePlaceholders = false
-            ),
+            config = defaultConfig,
             pagingSourceFactory = { SearchPhotoDataSource(service, query) }
         ).flow
     }
 
     fun getFavorites(): Flow<PagingData<UnsplashPhoto>> {
         return Pager(
-            config = PagingConfig(
-                pageSize = PAGE_SIZE,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = { FavoritesDataSource(database) }
+            config = defaultConfig,
+            pagingSourceFactory = { database.favoritesDao().getFavorites() }
         ).flow
     }
 
     fun checkPhotoIsAdded(photo: UnsplashPhoto): Flow<Boolean> {
-        return flow { database.favoritesDao().checkPhotoIsAdded(photo.id) }
+        return flow { emit(database.favoritesDao().checkPhotoIsAdded(photo.id)) }
     }
 
     fun addToFavorites(photo: UnsplashPhoto): Flow<Any> {
-        return flow { database.favoritesDao().addToFavorites(photo) }
+        return flow { emit(database.favoritesDao().addToFavorites(photo)) }
     }
 
     fun removeFromFavorites(photo: UnsplashPhoto): Flow<Any> {
-        return flow { database.favoritesDao().removeFromFavorites(photo.id) }
+        return flow { emit(database.favoritesDao().removeFromFavorites(photo.id)) }
     }
 
     fun trackDownload(url: String?): Flow<Any> {
@@ -65,7 +57,7 @@ class PhotosRepository(
             val uriBuilder = Uri.parse(url).buildUpon()
             uriBuilder.appendQueryParameter("client_id", Config.accessKey)
             val downloadUrl = uriBuilder.build().toString()
-            return flow { service.trackDownload(downloadUrl) }
+            return flow { emit(service.trackDownload(downloadUrl)) }
         }
         return emptyFlow()
     }
