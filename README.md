@@ -10,8 +10,11 @@
 
 ## App description
 
-//todo add description/motivation & screenshots/video
+Work in progress
 
+![Work in progress](https://unsplash.com/photos/NoOrDKxUfzo/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8Mnx8dW5kZXIlMjBjb25zdHJ1Y3Rpb258ZW58MHx8fHwxNjg5NjA4Mjg1fDA&force=true&w=2400)
+
+//todo add description/motivation & screenshots/video
 
 ## Tech stack
 
@@ -41,25 +44,34 @@
 
 ## Features Roadmap
 
-- [x] Gallery screen (Image list, loading data with pagination, search)
-- [] Favorites screen
-- [] Fullscreen image view (share, download, add to favs, show details about the image)
-- [] Settings screen
+- [x] Gallery screen
+  - [x] Image list
+  - [x] Data loading with pagination
+  - [x] Search
+- [ ] Fullscreen image view
+  - [ ] Zoomable, draggable image view
+  - [x] Share
+  - [x] Download
+  - [ ] Add to favorites
+  - [ ] Show details
+- [ ] Favorites screen
+- [ ] Settings screen
 
 
 ## Tech Roadmap
 
 - [x] Load the image list with Retrofit, Coroutines and Paging 3 library
 - [x] Room database for storing favorite photos
-- [] Multi-module
-- [] Dagger/Hilt
-- [] Unit tests
-- [] Jetpack Compose
+- [ ] Multi-module
+- [ ] Dagger/Hilt
+- [ ] Unit tests
+- [ ] Jetpack Compose
 
 
 ## Minor tasks and enhancements 
 
 * Add info in README.md
+* Handle multiple backstacks navigation https://developer.android.com/guide/navigation/backstack/multi-back-stacks
 * Display a number of requests left (X-Ratelimit-Remaining)
 * Error handling
 * Gradle improvements
@@ -88,4 +100,20 @@ To launch the app:
 ## Links
 
 
-## Licenses
+# License
+
+```
+Designed and developed by 2023 maxmakarovdev (Maksim Makarov)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
