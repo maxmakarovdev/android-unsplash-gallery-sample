@@ -9,14 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
+import androidx.core.view.marginTop
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+import com.maxmakarov.gallery.R
+import com.maxmakarov.gallery.core.BaseFragment
 import com.maxmakarov.gallery.databinding.GalleryFragmentBinding
 import com.maxmakarov.gallery.model.UnsplashPhoto
 import com.maxmakarov.gallery.ui.gallery.list.PhotoViewHolder
@@ -31,36 +36,31 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.LazyThreadSafetyMode.NONE
+import kotlin.math.max
+import kotlin.math.min
 
 
-class GalleryFragment : Fragment() {
+class GalleryFragment : BaseFragment<GalleryFragmentBinding>() {
 
-    private lateinit var binding: GalleryFragmentBinding
     private val viewModel by lazy(NONE){ GalleryViewModel.get(this) }
 
     private lateinit var photosAdapter: PhotosAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
     private val adapterCallback = object : PhotoViewHolder.PhotoClickCallback {
         override fun onClick(photo: UnsplashPhoto) {
+            viewModel.favoriteClicked(photo)
+        }
+
+        override fun onLongClick(photo: UnsplashPhoto) {
             val intent = Intent()
             intent.action = Intent.ACTION_VIEW
             intent.setDataAndType(Uri.parse(photo.urls.full), "image/*")
             startActivity(intent)
         }
-
-        override fun onLongClick(photo: UnsplashPhoto) {
-            //todo
-            Toast.makeText(requireActivity(), "Long clicked", Toast.LENGTH_SHORT).show()
-        }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = GalleryFragmentBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): GalleryFragmentBinding {
+        return GalleryFragmentBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,17 +102,17 @@ class GalleryFragment : Fragment() {
         uiState: StateFlow<UiState>,
         onQueryChanged: (UiAction.Search) -> Unit
     ) {
-        searchRepo.setOnEditorActionListener { _, actionId, _ ->
+        search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
-                updateRepoListFromInput(onQueryChanged)
+                updateListFromInput(onQueryChanged)
                 true
             } else {
                 false
             }
         }
-        searchRepo.setOnKeyListener { _, keyCode, event ->
+        search.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                updateRepoListFromInput(onQueryChanged)
+                updateListFromInput(onQueryChanged)
                 true
             } else {
                 false
@@ -123,14 +123,17 @@ class GalleryFragment : Fragment() {
             uiState
                 .map { it.query }
                 .distinctUntilChanged()
-                .collect(searchRepo::setText)
+                .collect {
+                    search.setText(it)
+                    search.setSelection(search.length())
+                }
         }
     }
 
-    private fun GalleryFragmentBinding.updateRepoListFromInput(onQueryChanged: (UiAction.Search) -> Unit) {
-        searchRepo.text.trim().let {
+    private fun GalleryFragmentBinding.updateListFromInput(onQueryChanged: (UiAction.Search) -> Unit) {
+        search.text.trim().let {
             if (it.isNotEmpty()) {
-                list.scrollToPosition(0)
+                list.smoothScrollToPosition(0)
                 onQueryChanged(UiAction.Search(query = it.toString()))
             }
         }
@@ -141,7 +144,14 @@ class GalleryFragment : Fragment() {
         uiState: StateFlow<UiState>,
         pagingData: Flow<PagingData<UiModel>>
     ) {
-        retryButton.setOnClickListener { photosAdapter.retry() }
+        list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val alignLowerBound = max(0, dy - search.translationY.toInt())
+                val alignUpperBound = -min(alignLowerBound, search.height + search.marginTop * 2)
+
+                search.translationY = alignUpperBound.toFloat()
+            }
+        })
 
         lifecycleScope.launch {
             pagingData.collectLatest(photosAdapter::submitData)
@@ -153,17 +163,21 @@ class GalleryFragment : Fragment() {
                 emptyList.isVisible = isListEmpty
                 list.isVisible = !isListEmpty
                 progressBar.isVisible = loadState.source.refresh is LoadState.Loading
-                retryButton.isVisible = loadState.source.refresh is LoadState.Error
+                val refreshState = loadState.source.refresh
+                if (refreshState is LoadState.Error) {
+                    Snackbar.make(list, refreshState.error.message.orEmpty(), LENGTH_INDEFINITE)
+                        .setAction(R.string.retry) { photosAdapter.retry() }
+                        .show()
+                }
 
                 val errorState = loadState.source.append as? LoadState.Error
                     ?: loadState.source.prepend as? LoadState.Error
                     ?: loadState.append as? LoadState.Error
                     ?: loadState.prepend as? LoadState.Error
-                errorState?.let {
-                    Toast.makeText(requireActivity(),
-                        "\uD83D\uDE28 Wooops ${it.error}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                errorState?.error?.also { error ->
+                    activity?.also {
+                        Snackbar.make(list, "\uD83D\uDE28 Wooops $error", LENGTH_SHORT).show()
+                    }
                 }
             }
         }

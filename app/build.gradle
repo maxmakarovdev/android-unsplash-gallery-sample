@@ -14,15 +14,24 @@ android {
         minSdk 26
         targetSdk 33
         versionCode 1
-        versionName "0.1"
+        versionName "0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        def secretKeys = getSecretKeys()
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'UNSPLASH_ACCESS_KEY', secretKeys['access_key']
+            buildConfigField 'String', 'UNSPLASH_SECRET_KEY', secretKeys['secret_key']
+        }
+        debug {
+            minifyEnabled false
+            buildConfigField 'String', 'UNSPLASH_ACCESS_KEY', secretKeys['access_key']
+            buildConfigField 'String', 'UNSPLASH_SECRET_KEY', secretKeys['secret_key']
         }
     }
     compileOptions {
@@ -35,6 +44,7 @@ android {
     buildFeatures {
         viewBinding true
         compose true
+        buildConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.8'
@@ -90,4 +100,11 @@ dependencies {
     //debug
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+}
+
+def getSecretKeys() {
+    def keyFile = file("unsplash.keys")
+    def secretKeys = new Properties()
+    secretKeys.load(new FileInputStream(keyFile))
+    return secretKeys
 }

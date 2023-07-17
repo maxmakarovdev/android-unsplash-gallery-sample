@@ -41,20 +41,20 @@
 
 ## Features Roadmap
 
-[x] Gallery screen (Image list, loading data with pagination, search)
-[] Favorites screen
-[] Fullscreen image view (share, download, add to favs, show details about the image)
-[] Settings screen
+- [x] Gallery screen (Image list, loading data with pagination, search)
+- [] Favorites screen
+- [] Fullscreen image view (share, download, add to favs, show details about the image)
+- [] Settings screen
 
 
 ## Tech Roadmap
 
-[x] Load the image list with Retrofit, Coroutines and Paging 3 library
-[x] Room database for storing favorite photos
-[] Multi-module
-[] Dagger/Hilt
-[] Unit tests
-[] Jetpack Compose
+- [x] Load the image list with Retrofit, Coroutines and Paging 3 library
+- [x] Room database for storing favorite photos
+- [] Multi-module
+- [] Dagger/Hilt
+- [] Unit tests
+- [] Jetpack Compose
 
 
 ## Minor tasks and enhancements 
@@ -73,16 +73,16 @@
 ## Getting Started
 
 To open this project:
-1. Clone the project via Git and open it via Android Studio
+* Clone the project via Git and open it via Android Studio
 
 To launch the app:
-2. Register as a developer in Unsplash and create a demo project https://unsplash.com/oauth/applications/new
-3. Put a generated Access Key and Private Key to the `app/unsplash.keys` file:
+* Register as a developer in Unsplash and create a demo project https://unsplash.com/oauth/applications/new
+* Put a generated Access Key and Private Key to the `app/unsplash.keys` file:
    ```
    access_key="<your access key>"
    secret_key="<your secret key>"
    ```
-4. Run the app and enjoy!
+* Run the app and enjoy!
 
 
 ## Links

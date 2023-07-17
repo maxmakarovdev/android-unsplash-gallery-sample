@@ -11,7 +11,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 /**
  * Factory for manual DI to avoid sticking to a specific DI library.
- * //todo maybe Hilt will be implemented
+ *
  */
 object RetrofitFactory {
 
