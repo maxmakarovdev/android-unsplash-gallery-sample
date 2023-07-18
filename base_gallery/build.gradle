@@ -1,0 +1,40 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
+    id 'com.google.devtools.ksp' version '1.8.22-1.0.11'
+}
+
+android {
+    namespace 'com.maxmakarov.base.gallery'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 24
+        //noinspection OldTargetApi
+        targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    api(project(":core"))
+    ksp "androidx.room:room-compiler:2.5.2"
+}

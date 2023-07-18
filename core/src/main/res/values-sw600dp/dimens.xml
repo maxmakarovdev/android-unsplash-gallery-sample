@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="toolbar_height">64dp</dimen>
+    <dimen name="semi_toolbar_height">32dp</dimen>
+    <dimen name="image_drag_threshold">200dp</dimen>
+</resources>

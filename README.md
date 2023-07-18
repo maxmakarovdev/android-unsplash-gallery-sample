@@ -24,7 +24,7 @@ Work in progress
 * Architecture
   * MVVM + MVI + Repository Pattern
   * Single Activity
-  * [WIP] Multi-module
+  * Multi-module
   * Android Architecture Components (ViewModel, Navigation, Lifecycle)
   * [WIP] Dagger/Hilt DI
 * UI
@@ -39,7 +39,8 @@ Work in progress
   * Room
 * Testing
   * [WIP] JUnit 5 + Mockk
-* [WIP] Code analysis
+* Code analysis
+  * [WIP] Detekt
 
 
 ## Features Roadmap
@@ -48,21 +49,21 @@ Work in progress
   - [x] Image list
   - [x] Data loading with pagination
   - [x] Search
-- [ ] Fullscreen image view
+- [x] Fullscreen image view
   - [ ] Zoomable, draggable image view
   - [x] Share
   - [x] Download
-  - [ ] Add to favorites
+  - [x] Add to favorites
   - [ ] Show details
-- [ ] Favorites screen
+- [x] Favorites screen
 - [ ] Settings screen
 
 
 ## Tech Roadmap
 
-- [x] Load the image list with Retrofit, Coroutines and Paging 3 library
+- [x] Load the image list with Retrofit, Coroutines/Flow and Paging 3 library
 - [x] Room database for storing favorite photos
-- [ ] Multi-module
+- [x] Multi-module
 - [ ] Dagger/Hilt
 - [ ] Unit tests
 - [ ] Jetpack Compose
@@ -75,6 +76,7 @@ Work in progress
 * Display a number of requests left (X-Ratelimit-Remaining)
 * Error handling
 * Gradle improvements
+* Animations (Image opening, ...)
 
 
 ## Known issues
@@ -100,7 +102,7 @@ To launch the app:
 ## Links
 
 
-# License
+## License
 
 ```
 Designed and developed by 2023 maxmakarovdev (Maksim Makarov)

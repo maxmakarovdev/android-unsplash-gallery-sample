@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.maxmakarov.base.gallery.data.PhotosRepository
 import com.maxmakarov.base.gallery.model.UnsplashPhoto
 import com.maxmakarov.core.ui.BaseFragment
 import com.maxmakarov.core.ui.BlurHashDecoder
@@ -69,7 +70,7 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val photo: UnsplashPhoto = arguments?.getParcelable(ARG_PHOTO)!!
+        val photo: UnsplashPhoto = PhotosRepository.photoToView!!
         viewModel.init(photo)
         binding.apply {
             back.setOnClickListener {
@@ -173,9 +174,5 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             startActivity(this)
         }
-    }
-
-    companion object {
-        const val ARG_PHOTO = "arg.photo"
     }
 }

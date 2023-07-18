@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">UnsplashGalleryTest</string>
+    <string name="search_hint">Type a query</string>
+    <string name="no_results">No results 😓</string>
+    <string name="retry">Retry</string>
+    <string name="photo">Photo</string>
+    <string name="title_gallery">Gallery</string>
+    <string name="title_favourites">Favourites</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_image_view">Image view</string>
+    <string name="back">Back</string>
+    <string name="info">Info</string>
+    <string name="favorite">Favorite</string>
+    <string name="download">Download</string>
+    <string name="share">Share</string>
+    <string name="please_grant_permission">Please grant permission</string>
+    <string name="downloading">Downloading…</string>
+    <string name="download_failed">Download error</string>
+    <string name="share_title">Look at this image!</string>
+</resources>

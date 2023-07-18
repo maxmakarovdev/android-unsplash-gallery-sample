@@ -13,4 +13,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "UnsplashGalleryTest"
-include ':app'
+include ':app', ':core', ':base_gallery'
+include ':feature_gallery', ':feature_favorites', ':feature_settings', ':feature_view_image'

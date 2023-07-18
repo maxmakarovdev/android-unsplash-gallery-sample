@@ -1,8 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-parcelize'
-    id 'com.google.devtools.ksp' version '1.8.22-1.0.11'
 }
 
 android {
@@ -12,6 +10,7 @@ android {
     defaultConfig {
         applicationId "com.maxmakarov.gallery"
         minSdk 26
+        //noinspection OldTargetApi
         targetSdk 33
         versionCode 1
         versionName "0.5"
@@ -52,58 +51,14 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
-
-    //Architecture & navigation
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
-
-    //UI
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.paging:paging-runtime:3.1.1"
-    implementation "androidx.paging:paging-compose:3.2.0-rc01"
-
-    implementation 'io.coil-kt:coil:2.4.0'
-    implementation 'io.coil-kt:coil-compose:2.4.0'
-
-    implementation 'androidx.activity:activity-compose:1.7.2'
-    implementation platform('androidx.compose:compose-bom:2022.10.00')
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
-
-    //network
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:logging-interceptor")
-
-    //room
-    def room_version = "2.5.2"
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
-    implementation "androidx.room:room-paging:$room_version"
-    ksp "androidx.room:room-compiler:$room_version"
-
-    //test
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
-    //debug
-    debugImplementation 'androidx.compose.ui:ui-tooling'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    implementation(project(":feature_gallery"))
+    implementation(project(":feature_favorites"))
+    implementation(project(":feature_settings"))
+    implementation(project(":feature_view_image"))
 }
 
 def getSecretKeys() {
-    def keyFile = file("unsplash.keys")
+    def keyFile = file("../unsplash.keys")
     def secretKeys = new Properties()
     secretKeys.load(new FileInputStream(keyFile))
     return secretKeys
