@@ -11,7 +11,7 @@ object Config {
     lateinit var secretKey: String
         private set
 
-    val isLoggingEnabled = true
+    const val isLoggingEnabled = true
 
     fun init(
         application: Application,

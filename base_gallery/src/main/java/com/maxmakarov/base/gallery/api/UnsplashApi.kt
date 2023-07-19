@@ -26,7 +26,7 @@ interface UnsplashApi {
     suspend fun trackDownload(@Url url: String): Response<Any>
 
     companion object {
-        const val BASE_URL = "https://api.unsplash.com/"
+        private const val BASE_URL = "https://api.unsplash.com/"
         fun create() = RetrofitFactory.createRetrofitBuilder(BASE_URL).create(UnsplashApi::class.java)
     }
 }
