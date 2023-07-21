@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.maxmakarov.gallery.databinding.NavActivityBinding
 
@@ -19,8 +19,8 @@ class NavActivity : AppCompatActivity() {
         binding = NavActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        binding.navView.setupWithNavController(navController)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        binding.navView.setupWithNavController(navHostFragment.navController)
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideStatusBar()
