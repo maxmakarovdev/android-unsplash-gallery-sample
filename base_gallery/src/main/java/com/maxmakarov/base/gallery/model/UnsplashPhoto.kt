@@ -18,5 +18,6 @@ data class UnsplashPhoto(
     val description: String?,
     val urls: UnsplashUrls,
     val links: UnsplashLinks,
-    val user: UnsplashUser
+    val user: UnsplashUser,
+    val savedTimestamp: Long? = null
 ) : Parcelable

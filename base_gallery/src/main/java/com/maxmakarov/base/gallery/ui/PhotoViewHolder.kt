@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.maxmakarov.base.gallery.R
+import com.maxmakarov.base.gallery.model.UnsplashPhoto
 import com.maxmakarov.core.ui.AspectRatioImageView
 import com.maxmakarov.core.ui.BlurHashDecoder
 
 
-//todo use ViewBinding as an argument for a convenience
 class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.ViewHolder(view) {
     private val photoView: AspectRatioImageView = view.findViewById(R.id.photo)
-    private var photo: com.maxmakarov.base.gallery.model.UnsplashPhoto? = null
+    private var photo: UnsplashPhoto? = null
 
     init {
         view.setOnClickListener {
@@ -22,7 +22,7 @@ class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.V
         }
     }
 
-    fun bind(photo: com.maxmakarov.base.gallery.model.UnsplashPhoto?) {
+    fun bind(photo: UnsplashPhoto?) {
         if (photo != null) {
             this.photo = photo
 
@@ -43,6 +43,6 @@ class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.V
     }
 
     interface PhotoClickCallback {
-        fun onClick(photo: com.maxmakarov.base.gallery.model.UnsplashPhoto)
+        fun onClick(photo: UnsplashPhoto)
     }
 }

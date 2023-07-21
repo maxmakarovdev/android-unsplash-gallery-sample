@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.maxmakarov.base.gallery.data.PhotosRepository
 import com.maxmakarov.base.gallery.db.PhotoDatabase
+import com.maxmakarov.base.gallery.model.UnsplashPhoto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -16,10 +17,10 @@ import kotlinx.coroutines.launch
 
 class FullscreenImageViewModel(private val repository: PhotosRepository) : ViewModel() {
 
-    lateinit var photo: com.maxmakarov.base.gallery.model.UnsplashPhoto
-    val isFavoriteStream = MutableStateFlow(false)
+    lateinit var photo: UnsplashPhoto
+    val isFavoriteStream = MutableStateFlow<Boolean?>(null)
 
-    fun init(photo: com.maxmakarov.base.gallery.model.UnsplashPhoto) {
+    fun init(photo: UnsplashPhoto) {
         this.photo = photo
         viewModelScope.launch {
             checkIsFavorite()
@@ -29,7 +30,7 @@ class FullscreenImageViewModel(private val repository: PhotosRepository) : ViewM
     fun favoriteClicked() {
         viewModelScope.launch {
             val isFavorite = isFavoriteStream.value
-            repository.run { if(isFavorite) removeFromFavorites(photo) else addToFavorites(photo) }
+            repository.run { if(isFavorite == true) removeFromFavorites(photo) else addToFavorites(photo) }
                 .flowOn(Dispatchers.IO)
                 .collectLatest {
                     checkIsFavorite()

@@ -18,4 +18,5 @@
     <string name="download_failed">Download error</string>
     <string name="share_title">Look at this image!</string>
     <string name="nothing_here_yet">Nothing here yet</string>
+    <string name="error_wooops_n1">😨 Wooops %s</string>
 </resources>

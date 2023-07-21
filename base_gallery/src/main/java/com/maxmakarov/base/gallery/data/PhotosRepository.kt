@@ -41,7 +41,9 @@ class PhotosRepository(private val api: UnsplashApi, private val database: Photo
     }
 
     fun addToFavorites(photo: UnsplashPhoto): Flow<Any> {
-        return flow { emit(database.favoritesDao().addToFavorites(photo)) }
+        return flow { emit(database.favoritesDao().addToFavorites(photo.copy(
+            savedTimestamp = System.currentTimeMillis()
+        ))) }
     }
 
     fun removeFromFavorites(photo: UnsplashPhoto): Flow<Any> {

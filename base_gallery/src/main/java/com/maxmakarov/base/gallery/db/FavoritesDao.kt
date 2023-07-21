@@ -9,7 +9,7 @@ import com.maxmakarov.base.gallery.model.UnsplashPhoto
 
 @Dao
 interface FavoritesDao {
-    @Query("SELECT * FROM favorites") //todo order by adding time desc
+    @Query("SELECT * FROM favorites ORDER BY savedTimestamp DESC")
     fun getFavorites(): PagingSource<Int, UnsplashPhoto>
 
     @Query("SELECT EXISTS (SELECT 1 FROM favorites WHERE id = :photoId)")

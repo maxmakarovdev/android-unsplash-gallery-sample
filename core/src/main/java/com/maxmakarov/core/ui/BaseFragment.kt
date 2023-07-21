@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.snackbar.Snackbar
 
 abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     protected lateinit var binding: VB
+    protected val hostActivity: BaseNavActivity? get() = activity as? BaseNavActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,4 +22,9 @@ abstract class BaseFragment<VB : ViewBinding> : Fragment() {
     }
 
     abstract fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
+
+    fun Snackbar.showAboveNavBar() = apply {
+        hostActivity?.getBottomNavView()?.also { anchorView = it }
+        show()
+    }
 }

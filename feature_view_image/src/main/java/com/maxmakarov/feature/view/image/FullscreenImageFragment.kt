@@ -1,5 +1,6 @@
 package com.maxmakarov.feature.view.image
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -19,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import com.google.android.material.snackbar.Snackbar
 import com.maxmakarov.base.gallery.data.PhotosRepository
 import com.maxmakarov.base.gallery.model.UnsplashPhoto
@@ -26,6 +28,7 @@ import com.maxmakarov.core.ui.BaseFragment
 import com.maxmakarov.core.ui.BlurHashDecoder
 import com.maxmakarov.feature.view.image.databinding.FullscreenImageFragmentBinding
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -37,6 +40,7 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
     private val ctx get() = requireActivity()
 
     private val onDownloadComplete = object : BroadcastReceiver() {
+        @SuppressLint("ShowToast")
         override fun onReceive(context: Context, intent: Intent) {
             val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
             val uri = getSystemService(ctx, DownloadManager::class.java)?.getUriForDownloadedFile(id)
@@ -44,9 +48,10 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
             if (uri != null) {
                 openDownloadedImage(uri)
             } else {
-                Snackbar.make(binding.root, R.string.download_failed, BaseTransientBottomBar.LENGTH_LONG)
-                    .setAction(R.string.retry) { download() }
-                    .show()
+                Snackbar.make(binding.root, R.string.download_failed, LENGTH_LONG).apply {
+                    setAction(R.string.retry) { download() }
+                    showAboveNavBar()
+                }
             }
         }
     }
@@ -91,11 +96,19 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
 
             lifecycleScope.launch {
                 viewModel.isFavoriteStream.collectLatest {
-                    favorite.setImageResource(if (it) R.drawable.ic_star_24 else R.drawable.ic_star_outline_24)
+                    favorite.setIconResource(if (it == true) R.drawable.ic_star_24 else R.drawable.ic_star_outline_24)
                 }
             }
 
-            initDragListener()
+            lifecycleScope.launch {
+                viewModel.isFavoriteStream.drop(2).collectLatest {
+                    if (it == true) {
+                        hostActivity?.setFavouritesBadge(isVisible = true)
+                    }
+                }
+            }
+
+//            initDragListener()
 
             imageView.aspectRatio = photo.height.toDouble() / photo.width.toDouble()
             val bitmap = BlurHashDecoder.decode(photo.blur_hash, 50, 50)
@@ -106,7 +119,7 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
         }
     }
 
-    private fun FullscreenImageFragmentBinding.initDragListener(){
+//    private fun FullscreenImageFragmentBinding.initDragListener(){
         //todo uncomment this
         /*imageView.dragDownListener = object : ZoomableImageView.DragDownListener {
             private val edge = resources.getDimension(R.dimen.image_drag_threshold)
@@ -141,10 +154,12 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
                 }
             }
         }*/
-    }
+//    }
 
+    @SuppressLint("ShowToast")
     private fun download() {
-        Snackbar.make(binding.root, R.string.downloading, BaseTransientBottomBar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, R.string.downloading, BaseTransientBottomBar.LENGTH_SHORT)
+            .showAboveNavBar()
 
         viewModel.trackDownloads()
 

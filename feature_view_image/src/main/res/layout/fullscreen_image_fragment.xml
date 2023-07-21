@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_1000"
@@ -21,55 +22,60 @@
         android:background="@color/semi_transparent"
         android:orientation="horizontal">
 
-        <ImageView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/back"
+            style="?attr/borderlessButtonStyle"
             android:layout_width="@dimen/toolbar_height"
             android:layout_height="@dimen/toolbar_height"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="2dp"
             android:contentDescription="@string/back"
             android:padding="14dp"
-            android:src="@drawable/ic_arrow_back_24" />
+            app:icon="@drawable/ic_arrow_back_24" />
 
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <ImageView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/favorite"
+            style="?attr/borderlessButtonStyle"
             android:layout_width="@dimen/toolbar_height"
             android:layout_height="@dimen/toolbar_height"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="2dp"
             android:contentDescription="@string/favorite"
             android:padding="14dp"
-            android:src="@drawable/ic_star_outline_24" />
+            app:icon="@drawable/ic_star_outline_24" />
 
-        <ImageView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/share"
+            style="?attr/borderlessButtonStyle"
             android:layout_width="@dimen/toolbar_height"
             android:layout_height="@dimen/toolbar_height"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="2dp"
             android:contentDescription="@string/share"
             android:padding="14dp"
-            android:src="@drawable/ic_share_24" />
+            app:icon="@drawable/ic_share_24" />
 
-        <ImageView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/download"
+            style="?attr/borderlessButtonStyle"
             android:layout_width="@dimen/toolbar_height"
             android:layout_height="@dimen/toolbar_height"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="2dp"
             android:contentDescription="@string/download"
             android:padding="14dp"
-            android:src="@drawable/ic_download_24" />
+            app:icon="@drawable/ic_download_24" />
 
-        <ImageView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/info"
+            style="?attr/borderlessButtonStyle"
             android:layout_width="@dimen/toolbar_height"
             android:layout_height="@dimen/toolbar_height"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="2dp"
             android:contentDescription="@string/info"
             android:padding="14dp"
-            android:src="@drawable/ic_info_24" />
+            app:icon="@drawable/ic_info_24" />
 
     </LinearLayout>
 </FrameLayout>

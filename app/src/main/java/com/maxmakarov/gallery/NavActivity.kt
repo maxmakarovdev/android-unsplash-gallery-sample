@@ -5,12 +5,12 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.maxmakarov.core.ui.BaseNavActivity
 import com.maxmakarov.gallery.databinding.NavActivityBinding
 
-class NavActivity : AppCompatActivity() {
+class NavActivity : BaseNavActivity() {
 
     private lateinit var binding: NavActivityBinding
 
@@ -38,4 +38,12 @@ class NavActivity : AppCompatActivity() {
             )
         }
     }
+
+    override fun setFavouritesBadge(isVisible: Boolean) {
+        binding.navView.getOrCreateBadge(R.id.favorites_nav_graph).also {
+            it.isVisible = isVisible
+        }
+    }
+
+    override fun getBottomNavView() = binding.navView
 }
