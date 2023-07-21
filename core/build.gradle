@@ -35,8 +35,6 @@ android {
 }
 
 dependencies {
-    api 'androidx.appcompat:appcompat:1.6.1'
-
     api 'androidx.core:core-ktx:1.10.1'
     api 'androidx.appcompat:appcompat:1.6.1'
     api 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
@@ -54,6 +52,9 @@ dependencies {
 
     api 'io.coil-kt:coil:2.4.0'
     api 'io.coil-kt:coil-compose:2.4.0'
+
+    api 'com.airbnb.android:lottie:6.1.0'
+    api "com.airbnb.android:lottie-compose:6.1.0"
 
     api 'androidx.activity:activity-compose:1.7.2'
     api platform('androidx.compose:compose-bom:2022.10.00')
