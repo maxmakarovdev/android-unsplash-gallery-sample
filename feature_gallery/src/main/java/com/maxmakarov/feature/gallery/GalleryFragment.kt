@@ -53,9 +53,9 @@ class GalleryFragment : BaseGalleryFragment<GalleryFragmentBinding>() {
         }
     }
 
-    private fun GalleryFragmentBinding.bindSearch(
+    private inline fun GalleryFragmentBinding.bindSearch(
         uiState: StateFlow<UiState>,
-        onQueryChanged: (UiAction.Search) -> Unit
+        crossinline onQueryChanged: (UiAction.Search) -> Unit
     ) {
         search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -85,7 +85,7 @@ class GalleryFragment : BaseGalleryFragment<GalleryFragmentBinding>() {
         }
     }
 
-    private fun GalleryFragmentBinding.updateListFromInput(onQueryChanged: (UiAction.Search) -> Unit) {
+    private inline fun GalleryFragmentBinding.updateListFromInput(onQueryChanged: (UiAction.Search) -> Unit) {
         search.text.trim().let {
             if (it.isNotEmpty()) {
                 list.smoothScrollToPosition(0)

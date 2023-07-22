@@ -1,81 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black_1000"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.maxmakarov.core.ui.AspectRatioImageView
-        android:id="@+id/image_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/semi_toolbar_height"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/photo"
-        android:scaleType="centerCrop" />
+        android:layout_height="match_parent"
+        android:background="@color/black_1000"
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:background="@color/semi_transparent"
-        android:orientation="horizontal">
+        <com.maxmakarov.feature.view.image.StretchableImageView
+            android:id="@+id/image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/photo"
+            android:scaleType="centerInside" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/back"
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="@dimen/toolbar_height"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
-            android:layout_marginStart="2dp"
-            android:contentDescription="@string/back"
-            android:padding="14dp"
-            app:icon="@drawable/ic_arrow_back_24" />
+            android:background="@color/semi_transparent"
+            android:orientation="horizontal">
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/back"
+                style="?attr/borderlessButtonStyle"
+                app:icon="@drawable/ic_arrow_back_24"
+                android:layout_width="@dimen/toolbar_height"
+                android:layout_height="@dimen/toolbar_height"
+                android:layout_marginStart="2dp"
+                android:contentDescription="@string/back"
+                android:padding="14dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/favorite"
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="@dimen/toolbar_height"
-            android:layout_height="@dimen/toolbar_height"
-            android:layout_marginEnd="2dp"
-            android:contentDescription="@string/favorite"
-            android:padding="14dp"
-            app:icon="@drawable/ic_star_outline_24" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/share"
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="@dimen/toolbar_height"
-            android:layout_height="@dimen/toolbar_height"
-            android:layout_marginEnd="2dp"
-            android:contentDescription="@string/share"
-            android:padding="14dp"
-            app:icon="@drawable/ic_share_24" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/favorite"
+                style="?attr/borderlessButtonStyle"
+                app:icon="@drawable/ic_star_outline_24"
+                android:layout_width="@dimen/toolbar_height"
+                android:layout_height="@dimen/toolbar_height"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="@string/favorite"
+                android:padding="14dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/download"
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="@dimen/toolbar_height"
-            android:layout_height="@dimen/toolbar_height"
-            android:layout_marginEnd="2dp"
-            android:contentDescription="@string/download"
-            android:padding="14dp"
-            app:icon="@drawable/ic_download_24" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/share"
+                style="?attr/borderlessButtonStyle"
+                app:icon="@drawable/ic_share_24"
+                android:layout_width="@dimen/toolbar_height"
+                android:layout_height="@dimen/toolbar_height"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="@string/share"
+                android:padding="14dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/info"
-            style="?attr/borderlessButtonStyle"
-            android:layout_width="@dimen/toolbar_height"
-            android:layout_height="@dimen/toolbar_height"
-            android:layout_marginEnd="2dp"
-            android:contentDescription="@string/info"
-            android:padding="14dp"
-            app:icon="@drawable/ic_info_24" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/download"
+                style="?attr/borderlessButtonStyle"
+                app:icon="@drawable/ic_download_24"
+                android:layout_width="@dimen/toolbar_height"
+                android:layout_height="@dimen/toolbar_height"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="@string/download"
+                android:padding="14dp" />
 
-    </LinearLayout>
-</FrameLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/info"
+                style="?attr/borderlessButtonStyle"
+                app:icon="@drawable/ic_info_24"
+                android:layout_width="@dimen/toolbar_height"
+                android:layout_height="@dimen/toolbar_height"
+                android:layout_marginEnd="2dp"
+                android:contentDescription="@string/info"
+                android:padding="14dp" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <include
+        android:id="@+id/info_bottom_sheet"
+        layout="@layout/image_info_bottom_sheet" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

@@ -16,6 +16,7 @@ Work in progress
 
 //todo add description/motivation & screenshots/video
 
+
 ## Tech stack
 
 * Kotlin
@@ -29,9 +30,9 @@ Work in progress
   * [WIP] Dagger/Hilt DI
 * UI
   * [WIP] Jetpack Compose
-  * [WIP] Material Design 3 components
+  * Material Design 3 components
   * Coil
-  * [WIP] Lottie
+  * Lottie
   * BlurHash
 * Data
   * Retrofit + OkHttp
@@ -49,13 +50,13 @@ Work in progress
   - [x] Image list
   - [x] Data loading with pagination
   - [x] Search
+- [x] Favorites screen
 - [x] Fullscreen image view
-  - [ ] Zoomable, draggable image view
+  - [x] Add to favorites
   - [x] Share
   - [x] Download
-  - [x] Add to favorites
-  - [ ] Show details
-- [x] Favorites screen
+  - [x] Zoomable image view
+  - [x] Show image info details
 - [ ] Settings screen
 
 
@@ -77,6 +78,7 @@ Work in progress
 * Error handling
 * Gradle improvements
 * Animations (Image opening, ...)
+* Fonts
 
 
 ## Known issues
@@ -91,7 +93,7 @@ To open this project:
 
 To launch the app:
 * Register as a developer in Unsplash and create a demo project https://unsplash.com/oauth/applications/new
-* Put a generated Access Key and Private Key to the `app/unsplash.keys` file:
+* Put a generated Access Key and Private Key to the `unsplash.keys` file in the root project directory:
    ```
    access_key="<your access key>"
    secret_key="<your secret key>"

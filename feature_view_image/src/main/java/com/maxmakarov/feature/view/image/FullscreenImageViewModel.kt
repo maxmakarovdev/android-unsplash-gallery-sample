@@ -59,10 +59,6 @@ class FullscreenImageViewModel(private val repository: PhotosRepository) : ViewM
 //        }
     }
 
-    fun infoClicked() {
-        //todo
-    }
-
     companion object {
         fun get(fragment: Fragment): FullscreenImageViewModel {
             val factory = object : AbstractSavedStateViewModelFactory(fragment, null){

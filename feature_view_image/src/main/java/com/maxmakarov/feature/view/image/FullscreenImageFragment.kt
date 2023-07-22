@@ -8,28 +8,40 @@ import android.content.Intent
 import android.content.Intent.ACTION_SEND
 import android.content.Intent.ACTION_VIEW
 import android.content.IntentFilter
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.format.DateFormat
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import coil.load
+import coil.transform.CircleCropTransformation
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import com.google.android.material.snackbar.Snackbar
 import com.maxmakarov.base.gallery.data.PhotosRepository
 import com.maxmakarov.base.gallery.model.UnsplashPhoto
 import com.maxmakarov.core.ui.BaseFragment
-import com.maxmakarov.core.ui.BlurHashDecoder
 import com.maxmakarov.feature.view.image.databinding.FullscreenImageFragmentBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlin.LazyThreadSafetyMode.NONE
 
 
@@ -38,6 +50,7 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
     private val viewModel by lazy(NONE){ FullscreenImageViewModel.get(this) }
 
     private val ctx get() = requireActivity()
+    private val bottomSheet by lazy { BottomSheetBehavior.from(binding.infoBottomSheet.root) }
 
     private val onDownloadComplete = object : BroadcastReceiver() {
         @SuppressLint("ShowToast")
@@ -91,8 +104,14 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
                 viewModel.favoriteClicked()
             }
             info.setOnClickListener {
-                viewModel.infoClicked()
+                when (bottomSheet.state) {
+                    STATE_EXPANDED -> bottomSheet.state = STATE_HIDDEN
+                    STATE_HIDDEN -> bottomSheet.state = STATE_EXPANDED
+                    else -> {}
+                }
             }
+
+            bottomSheet.state = STATE_HIDDEN
 
             lifecycleScope.launch {
                 viewModel.isFavoriteStream.collectLatest {
@@ -108,53 +127,11 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
                 }
             }
 
-//            initDragListener()
+            imageView.load(photo.urls.full)
 
-            imageView.aspectRatio = photo.height.toDouble() / photo.width.toDouble()
-            val bitmap = BlurHashDecoder.decode(photo.blur_hash, 50, 50)
-            imageView.load(photo.urls.full) {
-                placeholder(BitmapDrawable(resources, bitmap))
-                crossfade(true)
-            }
+            bindInfo(photo)
         }
     }
-
-//    private fun FullscreenImageFragmentBinding.initDragListener(){
-        //todo uncomment this
-        /*imageView.dragDownListener = object : ZoomableImageView.DragDownListener {
-            private val edge = resources.getDimension(R.dimen.image_drag_threshold)
-            private val toolbarViews = arrayOf(back, share, download, favorite, info)
-
-            override fun onDragDown(distance: Float) {
-                toolbarViews.forEach { it.translationY = -distance }
-                root.background.alpha = (255 * (1 - distance.norm(edge))).toInt()
-            }
-
-            private fun Float.norm(value: Float): Float {
-                val result = this / value
-                return when {
-                    result > 1 -> 1f
-                    result < 0 -> 0f
-                    else -> result
-                }
-            }
-
-            override fun onDragEnded(distance: Float) {
-                if (distance >= edge) {
-                    findNavController().popBackStack()
-                } else {
-                    imageView.animate().translationY(0f).start()
-                    toolbarViews.forEach { it.animate().translationY(0f).start() }
-                    ObjectAnimator.ofInt(root.background.alpha, 255).apply {
-                        addUpdateListener {
-                            root.background.alpha = it.animatedValue as Int
-                        }
-                        start()
-                    }
-                }
-            }
-        }*/
-//    }
 
     @SuppressLint("ShowToast")
     private fun download() {
@@ -189,5 +166,44 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             startActivity(this)
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun bindInfo(photo: UnsplashPhoto) {
+        binding.infoBottomSheet.apply {
+            avatar.load(photo.user.profile_image.large) {
+                transformations(CircleCropTransformation())
+                crossfade(true)
+            }
+            name.text = photo.user.name
+            username.setUpClickableUsername("@${photo.user.username}") {
+                Intent(ACTION_VIEW, Uri.parse(photo.user.links.html)).also { startActivity(it) }
+            }
+
+            description.text = photo.description
+            description.isVisible = photo.description != null
+            resolution.text = "${photo.width}x${photo.height}"
+
+            date.text = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+                .parse(photo.created_at)!!
+                .let { DateFormat.getDateFormat(ctx).format(it) }
+        }
+    }
+
+    private inline fun TextView.setUpClickableUsername(
+        text: String,
+        crossinline onClick: () -> Unit
+    ) {
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                onClick()
+            }
+        }
+        SpannableStringBuilder().apply {
+            append(SpannableString(text))
+            setSpan(clickableSpan, 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setText(this, TextView.BufferType.SPANNABLE)
+        }
+        movementMethod = LinkMovementMethod.getInstance()
     }
 }
