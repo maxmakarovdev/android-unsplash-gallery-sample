@@ -40,8 +40,8 @@ object BlurHashDecoder {
             return null
         }
         val numCompEnc = decode83(blurHash, 0, 1)
-        val numCompX = (numCompEnc % 9) + 1
-        val numCompY = (numCompEnc / 9) + 1
+        val numCompX = numCompEnc % 9 + 1
+        val numCompY = numCompEnc / 9 + 1
         if (blurHash.length != 4 + 2 * numCompX * numCompY) {
             return null
         }
@@ -73,23 +73,19 @@ object BlurHashDecoder {
 
     private fun decodeDc(colorEnc: Int): FloatArray {
         val r = colorEnc shr 16
-        val g = (colorEnc shr 8) and 255
+        val g = colorEnc shr 8 and 255
         val b = colorEnc and 255
         return floatArrayOf(srgbToLinear(r), srgbToLinear(g), srgbToLinear(b))
     }
 
     private fun srgbToLinear(colorEnc: Int): Float {
         val v = colorEnc / 255f
-        return if (v <= 0.04045f) {
-            (v / 12.92f)
-        } else {
-            ((v + 0.055f) / 1.055f).pow(2.4f)
-        }
+        return if (v <= 0.04045f) v / 12.92f else ((v + 0.055f) / 1.055f).pow(2.4f)
     }
 
     private fun decodeAc(value: Int, maxAc: Float): FloatArray {
         val r = value / (19 * 19)
-        val g = (value / 19) % 19
+        val g = value / 19 % 19
         val b = value % 19
         return floatArrayOf(
             signedPow2((r - 9) / 9.0f) * maxAc,

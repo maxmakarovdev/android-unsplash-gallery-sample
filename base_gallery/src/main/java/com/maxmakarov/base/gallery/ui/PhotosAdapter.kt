@@ -38,8 +38,8 @@ class PhotosAdapter(private val callback: PhotoClickCallback) :
     companion object {
         private val UIMODEL_COMPARATOR = object : DiffUtil.ItemCallback<UiModel>() {
             override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
-                return (oldItem is UiModel.PhotoItem && newItem is UiModel.PhotoItem &&
-                        oldItem.photo.id == newItem.photo.id)
+                return oldItem is UiModel.PhotoItem && newItem is UiModel.PhotoItem &&
+                        oldItem.photo.id == newItem.photo.id
             }
 
             override fun areContentsTheSame(oldItem: UiModel, newItem: UiModel): Boolean =

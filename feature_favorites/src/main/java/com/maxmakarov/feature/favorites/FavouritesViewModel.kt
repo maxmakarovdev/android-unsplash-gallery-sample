@@ -31,6 +31,7 @@ class FavouritesViewModel(repository: PhotosRepository) : ViewModel() {
     companion object {
         fun get(fragment: Fragment): FavouritesViewModel {
             val factory = object : AbstractSavedStateViewModelFactory(fragment, null){
+                @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(
                     key: String,
                     modelClass: Class<T>,

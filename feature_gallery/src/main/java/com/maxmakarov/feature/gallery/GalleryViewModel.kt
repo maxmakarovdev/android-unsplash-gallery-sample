@@ -50,9 +50,7 @@ class GalleryViewModel(private val repository: PhotosRepository) : ViewModel() {
             .onStart { emit(UiAction.Search(query = "")) }
 
         pagingDataFlow = searches
-            .flatMapLatest {
-                if (it.query.isBlank()) loadPhotos() else searchPhotos(queryString = it.query)
-            }
+            .flatMapLatest { if (it.query.isBlank()) loadPhotos() else searchPhotos(it.query) }
             .cachedIn(viewModelScope)
 
         state = searches
@@ -60,12 +58,9 @@ class GalleryViewModel(private val repository: PhotosRepository) : ViewModel() {
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
-                initialValue = UiState()
-            )
+                initialValue = UiState())
 
-        accept = { action ->
-            viewModelScope.launch { actionStateFlow.emit(action) }
-        }
+        accept = { action -> viewModelScope.launch { actionStateFlow.emit(action) } }
     }
 
     private fun searchPhotos(queryString: String): Flow<PagingData<UiModel>> =
@@ -79,6 +74,7 @@ class GalleryViewModel(private val repository: PhotosRepository) : ViewModel() {
     companion object {
         fun get(fragment: Fragment): GalleryViewModel {
             val factory = object : AbstractSavedStateViewModelFactory(fragment, null){
+                @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(
                     key: String,
                     modelClass: Class<T>,

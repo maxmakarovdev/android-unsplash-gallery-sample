@@ -91,45 +91,34 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
         val photo: UnsplashPhoto = PhotosRepository.photoToView!!
         viewModel.init(photo)
         binding.apply {
-            back.setOnClickListener {
-                findNavController().popBackStack()
-            }
-            share.setOnClickListener {
-                share()
-            }
-            download.setOnClickListener {
-                download()
-            }
-            favorite.setOnClickListener {
-                viewModel.favoriteClicked()
-            }
-            info.setOnClickListener {
-                when (bottomSheet.state) {
-                    STATE_EXPANDED -> bottomSheet.state = STATE_HIDDEN
-                    STATE_HIDDEN -> bottomSheet.state = STATE_EXPANDED
-                    else -> {}
-                }
-            }
+            back.setOnClickListener { findNavController().popBackStack() }
+            share.setOnClickListener { share() }
+            download.setOnClickListener { download() }
+            favorite.setOnClickListener { viewModel.favoriteClicked() }
+            info.setOnClickListener { toggleInfo() }
 
-            bottomSheet.state = STATE_HIDDEN
-
-            lifecycleScope.launch {
-                viewModel.isFavoriteStream.collectLatest {
-                    favorite.setIconResource(if (it == true) R.drawable.ic_star_24 else R.drawable.ic_star_outline_24)
-                }
-            }
-
-            lifecycleScope.launch {
-                viewModel.isFavoriteStream.drop(2).collectLatest {
-                    if (it == true) {
-                        hostActivity?.setFavouritesBadge(isVisible = true)
-                    }
-                }
-            }
-
+            bindFavorite()
             imageView.load(photo.urls.full)
-
+            bottomSheet.state = STATE_HIDDEN
             bindInfo(photo)
+        }
+    }
+
+    private fun bindFavorite() {
+        lifecycleScope.launch {
+            viewModel.isFavoriteStream.collectLatest {
+                binding.favorite.setIconResource(
+                    if (it == true) R.drawable.ic_star_24 else R.drawable.ic_star_outline_24
+                )
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.isFavoriteStream.drop(2).collectLatest {
+                if (it == true) {
+                    hostActivity?.setFavouritesBadge(isVisible = true)
+                }
+            }
         }
     }
 
@@ -183,10 +172,15 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
             description.text = photo.description
             description.isVisible = photo.description != null
             resolution.text = "${photo.width}x${photo.height}"
+            date.text = transformDate(photo.created_at)
+        }
+    }
 
-            date.text = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
-                .parse(photo.created_at)!!
-                .let { DateFormat.getDateFormat(ctx).format(it) }
+    private fun toggleInfo() {
+        when (bottomSheet.state) {
+            STATE_EXPANDED -> bottomSheet.state = STATE_HIDDEN
+            STATE_HIDDEN -> bottomSheet.state = STATE_EXPANDED
+            else -> {}
         }
     }
 
@@ -205,5 +199,11 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
             setText(this, TextView.BufferType.SPANNABLE)
         }
         movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    private fun transformDate(date: String): String {
+        return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+            .parse(date)!!
+            .let { DateFormat.getDateFormat(ctx).format(it) }
     }
 }

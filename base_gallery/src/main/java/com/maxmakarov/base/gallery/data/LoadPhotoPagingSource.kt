@@ -19,7 +19,7 @@ class LoadPhotoPagingSource(private val api: UnsplashApi) : PagingSource<Int, Un
             LoadResult.Page(
                 data = photosList,
                 prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
-                nextKey = if (photosList.isEmpty()) null else page + (params.loadSize / PAGE_SIZE)
+                nextKey = if (photosList.isEmpty()) null else page + params.loadSize / PAGE_SIZE
             )
         } catch (exception: IOException) {
             return LoadResult.Error(exception)
