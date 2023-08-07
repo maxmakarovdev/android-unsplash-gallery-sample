@@ -63,7 +63,7 @@ Work in progress
 ## Tech Roadmap
 
 - [x] Load the image list with Retrofit, Coroutines/Flow and Paging 3 library
-- [x] Room database for storing favorite photos
+- [x] Room database for storing favorite images
 - [x] Multi-module
 - [ ] Dagger/Hilt
 - [ ] Unit tests

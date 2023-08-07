@@ -6,47 +6,47 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import com.maxmakarov.base.gallery.api.UnsplashApi
-import com.maxmakarov.base.gallery.db.PhotoDatabase
-import com.maxmakarov.base.gallery.model.UnsplashPhoto
+import com.maxmakarov.base.gallery.db.ImageDatabase
+import com.maxmakarov.base.gallery.model.UnsplashImage
 import com.maxmakarov.core.Config
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
-class PhotosRepository(private val api: UnsplashApi, private val database: PhotoDatabase) {
+class ImagesRepository(private val api: UnsplashApi, private val database: ImageDatabase) {
     private val defaultConfig = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false)
 
-    private fun getPagerFlow(dataSource: PagingSource<Int, UnsplashPhoto>): Flow<PagingData<UnsplashPhoto>> {
-        return Pager(config = defaultConfig, pagingSourceFactory = { dataSource }).flow
+    private fun pagerFlow(pagingSourceFactory: () -> PagingSource<Int, UnsplashImage>): Flow<PagingData<UnsplashImage>> {
+        return Pager(config = defaultConfig, pagingSourceFactory = pagingSourceFactory).flow
     }
 
-    fun loadPhotosStream() =
-        getPagerFlow(LoadPhotoPagingSource(api))
+    fun loadImagesStream() =
+        pagerFlow { LoadImagesPagingSource(api) }
             .flowOn(Dispatchers.Default)
 
-    fun searchPhotosStream(query: String) =
-        getPagerFlow(SearchPhotoPagingSource(api, query))
+    fun searchImagesStream(query: String) =
+        pagerFlow { SearchImagesPagingSource(api, query) }
             .flowOn(Dispatchers.Default)
 
     fun getFavorites() =
-        getPagerFlow(database.favoritesDao().getFavorites())
+        pagerFlow { database.favoritesDao().getFavorites() }
             .flowOn(Dispatchers.Default)
 
-    fun checkPhotoIsAdded(photo: UnsplashPhoto) =
+    fun checkIsAddedToFavs(image: UnsplashImage) =
         database.favoritesDao()
-            .checkPhotoIsAdded(photo.id)
+            .checkIsAdded(image.id)
             .flowOn(Dispatchers.Default)
 
-    suspend fun addToFavorites(photo: UnsplashPhoto) {
+    suspend fun addToFavorites(image: UnsplashImage) {
         withContext(Dispatchers.Default) {
-            database.favoritesDao().addToFavorites(photo.copy(savedTimestamp = System.currentTimeMillis()))
+            database.favoritesDao().addToFavorites(image.copy(savedTimestamp = System.currentTimeMillis()))
         }
     }
 
-    suspend fun removeFromFavorites(photo: UnsplashPhoto) {
+    suspend fun removeFromFavorites(image: UnsplashImage) {
         withContext(Dispatchers.Default) {
-            database.favoritesDao().removeFromFavorites(photo.id)
+            database.favoritesDao().removeFromFavorites(image.id)
         }
     }
 
@@ -63,13 +63,13 @@ class PhotosRepository(private val api: UnsplashApi, private val database: Photo
 
     companion object {
         const val PAGE_SIZE = 20 //max limit is 30
-        fun create(database: PhotoDatabase): PhotosRepository {
-            return PhotosRepository(UnsplashApi.create(), database)
+        fun create(database: ImageDatabase): ImagesRepository {
+            return ImagesRepository(UnsplashApi.create(), database)
         }
 
         //fixme: Temporary workaround of passing the argument to FullscreenImageFragment
         //currently Navigation doesn't support Parcelable as a deeplink argument as well as
         //it can't pass Json-serialized object properly because of symbols in the blur_hash field
-        var photoToView: UnsplashPhoto? = null
+        var imageToView: UnsplashImage? = null
     }
 }

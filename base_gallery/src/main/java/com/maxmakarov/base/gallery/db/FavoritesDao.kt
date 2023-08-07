@@ -5,20 +5,20 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.maxmakarov.base.gallery.model.UnsplashPhoto
+import com.maxmakarov.base.gallery.model.UnsplashImage
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoritesDao {
     @Query("SELECT * FROM favorites ORDER BY savedTimestamp DESC")
-    fun getFavorites(): PagingSource<Int, UnsplashPhoto>
+    fun getFavorites(): PagingSource<Int, UnsplashImage>
 
-    @Query("SELECT EXISTS (SELECT 1 FROM favorites WHERE id = :photoId)")
-    fun checkPhotoIsAdded(photoId: String): Flow<Boolean>
+    @Query("SELECT EXISTS (SELECT 1 FROM favorites WHERE id = :imageId)")
+    fun checkIsAdded(imageId: String): Flow<Boolean>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addToFavorites(photo: UnsplashPhoto)
+    suspend fun addToFavorites(image: UnsplashImage)
 
-    @Query("DELETE FROM favorites WHERE id = :photoId")
-    suspend fun removeFromFavorites(photoId: String)
+    @Query("DELETE FROM favorites WHERE id = :imageId")
+    suspend fun removeFromFavorites(imageId: String)
 }

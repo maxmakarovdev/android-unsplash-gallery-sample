@@ -6,10 +6,10 @@
     android:paddingTop="4dp">
 
     <com.maxmakarov.core.ui.AspectRatioImageView
-        android:id="@+id/photo"
+        android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/photo"
+        android:contentDescription="@string/image"
         android:scaleType="centerCrop" />
 </FrameLayout>

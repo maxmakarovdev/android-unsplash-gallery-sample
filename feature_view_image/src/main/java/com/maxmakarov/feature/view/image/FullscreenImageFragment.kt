@@ -36,8 +36,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import com.google.android.material.snackbar.Snackbar
-import com.maxmakarov.base.gallery.data.PhotosRepository
-import com.maxmakarov.base.gallery.model.UnsplashPhoto
+import com.maxmakarov.base.gallery.data.ImagesRepository
+import com.maxmakarov.base.gallery.model.UnsplashImage
 import com.maxmakarov.core.ui.BaseFragment
 import com.maxmakarov.feature.view.image.databinding.FullscreenImageFragmentBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -96,8 +96,8 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val photo: UnsplashPhoto = PhotosRepository.photoToView!!
-        viewModel.init(photo)
+        val image: UnsplashImage = ImagesRepository.imageToView!!
+        viewModel.init(image)
         binding.apply {
             back.setOnClickListener { findNavController().popBackStack() }
             share.setOnClickListener { share() }
@@ -106,10 +106,10 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
             info.setOnClickListener { toggleInfo() }
 
             bindFavorite()
-            imageView.transitionName = photo.id
-            loadImage(photo)
+            imageView.transitionName = image.id
+            loadImage(image)
             bottomSheet.state = STATE_HIDDEN
-            bindInfo(photo)
+            bindInfo(image)
         }
     }
 
@@ -143,7 +143,7 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
 
         viewModel.trackDownloads()
 
-        val uri = Uri.parse(viewModel.photo.urls.full)
+        val uri = Uri.parse(viewModel.image.urls.full)
         getSystemService(ctx, DownloadManager::class.java)?.enqueue(
             DownloadManager.Request(uri)
                 .setDestinationInExternalFilesDir(
@@ -159,7 +159,7 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
         Intent(ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_title))
-            putExtra(Intent.EXTRA_TEXT, viewModel.photo.urls.raw)
+            putExtra(Intent.EXTRA_TEXT, viewModel.image.urls.raw)
             startActivity(Intent.createChooser(this, "choose one"))
         }
     }
@@ -171,26 +171,26 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
         }
     }
 
-    private fun loadImage(photo: UnsplashPhoto) {
-        binding.imageView.load(photo.urls.full)
+    private fun loadImage(image: UnsplashImage) {
+        binding.imageView.load(image.urls.full)
     }
 
     @SuppressLint("SetTextI18n")
-    private fun bindInfo(photo: UnsplashPhoto) {
+    private fun bindInfo(image: UnsplashImage) {
         binding.infoBottomSheet.apply {
-            avatar.load(photo.user.profile_image.large) {
+            avatar.load(image.user.profile_image.large) {
                 transformations(CircleCropTransformation())
                 crossfade(true)
             }
-            name.text = photo.user.name
-            username.setUpClickableUsername("@${photo.user.username}") {
-                Intent(ACTION_VIEW, Uri.parse(photo.user.links.html)).also { startActivity(it) }
+            name.text = image.user.name
+            username.setUpClickableUsername("@${image.user.username}") {
+                Intent(ACTION_VIEW, Uri.parse(image.user.links.html)).also { startActivity(it) }
             }
 
-            description.text = photo.description
-            description.isVisible = photo.description != null
-            resolution.text = "${photo.width}x${photo.height}"
-            date.text = transformDate(photo.created_at)
+            description.text = image.description
+            description.isVisible = image.description != null
+            resolution.text = "${image.width}x${image.height}"
+            date.text = transformDate(image.created_at)
         }
     }
 

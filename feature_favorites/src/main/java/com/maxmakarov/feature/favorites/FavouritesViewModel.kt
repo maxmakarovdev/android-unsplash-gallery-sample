@@ -9,19 +9,19 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.maxmakarov.base.gallery.data.PhotosRepository
-import com.maxmakarov.base.gallery.db.PhotoDatabase
+import com.maxmakarov.base.gallery.data.ImagesRepository
+import com.maxmakarov.base.gallery.db.ImageDatabase
 import com.maxmakarov.base.gallery.ui.UiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class FavouritesViewModel(repository: PhotosRepository) : ViewModel() {
+class FavouritesViewModel(repository: ImagesRepository) : ViewModel() {
 
     val pagingDataFlow: Flow<PagingData<UiModel>>
 
     init {
         pagingDataFlow = repository.getFavorites()
-            .map { pagingData -> pagingData.map { UiModel.PhotoItem(it) as UiModel } }
+            .map { pagingData -> pagingData.map { UiModel.ImageItem(it) as UiModel } }
             .cachedIn(viewModelScope)
     }
 
@@ -34,7 +34,7 @@ class FavouritesViewModel(repository: PhotosRepository) : ViewModel() {
                     modelClass: Class<T>,
                     handle: SavedStateHandle
                 ): T {
-                    val repository = PhotosRepository.create(PhotoDatabase.getInstance(fragment.requireContext()))
+                    val repository = ImagesRepository.create(ImageDatabase.getInstance(fragment.requireContext()))
                     if (modelClass.isAssignableFrom(FavouritesViewModel::class.java)) {
                         return FavouritesViewModel(repository) as T
                     }

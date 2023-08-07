@@ -9,8 +9,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.maxmakarov.base.gallery.data.PhotosRepository
-import com.maxmakarov.base.gallery.db.PhotoDatabase
+import com.maxmakarov.base.gallery.data.ImagesRepository
+import com.maxmakarov.base.gallery.db.ImageDatabase
 import com.maxmakarov.base.gallery.ui.UiAction
 import com.maxmakarov.base.gallery.ui.UiModel
 import com.maxmakarov.base.gallery.ui.UiState
@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GalleryViewModel(private val repository: PhotosRepository) : ViewModel() {
+class GalleryViewModel(private val repository: ImagesRepository) : ViewModel() {
 
     /**
      * Stream of immutable states representative of the UI.
@@ -50,7 +50,7 @@ class GalleryViewModel(private val repository: PhotosRepository) : ViewModel() {
             .onStart { emit(UiAction.Search(query = "")) }
 
         pagingDataFlow = searches
-            .flatMapLatest { if (it.query.isBlank()) loadPhotos() else searchPhotos(it.query) }
+            .flatMapLatest { if (it.query.isBlank()) loadImages() else searchImages(it.query) }
             .cachedIn(viewModelScope)
 
         state = searches
@@ -63,13 +63,13 @@ class GalleryViewModel(private val repository: PhotosRepository) : ViewModel() {
         accept = { action -> viewModelScope.launch { actionStateFlow.emit(action) } }
     }
 
-    private fun searchPhotos(queryString: String): Flow<PagingData<UiModel>> =
-        repository.searchPhotosStream(queryString)
-            .map { pagingData -> pagingData.map { UiModel.PhotoItem(it) } }
+    private fun searchImages(queryString: String): Flow<PagingData<UiModel>> =
+        repository.searchImagesStream(queryString)
+            .map { pagingData -> pagingData.map { UiModel.ImageItem(it) } }
 
-    private fun loadPhotos(): Flow<PagingData<UiModel>> =
-        repository.loadPhotosStream()
-            .map { pagingData -> pagingData.map { UiModel.PhotoItem(it) } }
+    private fun loadImages(): Flow<PagingData<UiModel>> =
+        repository.loadImagesStream()
+            .map { pagingData -> pagingData.map { UiModel.ImageItem(it) } }
 
     companion object {
         fun get(fragment: Fragment): GalleryViewModel {
@@ -80,7 +80,7 @@ class GalleryViewModel(private val repository: PhotosRepository) : ViewModel() {
                     modelClass: Class<T>,
                     handle: SavedStateHandle
                 ): T {
-                    val repository = PhotosRepository.create(PhotoDatabase.getInstance(fragment.requireContext()))
+                    val repository = ImagesRepository.create(ImageDatabase.getInstance(fragment.requireContext()))
                     if (modelClass.isAssignableFrom(GalleryViewModel::class.java)) {
                         return GalleryViewModel(repository) as T
                     }

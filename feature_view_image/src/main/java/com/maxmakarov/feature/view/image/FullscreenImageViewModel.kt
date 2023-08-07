@@ -6,22 +6,22 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.maxmakarov.base.gallery.data.PhotosRepository
-import com.maxmakarov.base.gallery.db.PhotoDatabase
-import com.maxmakarov.base.gallery.model.UnsplashPhoto
+import com.maxmakarov.base.gallery.data.ImagesRepository
+import com.maxmakarov.base.gallery.db.ImageDatabase
+import com.maxmakarov.base.gallery.model.UnsplashImage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class FullscreenImageViewModel(private val repository: PhotosRepository) : ViewModel() {
+class FullscreenImageViewModel(private val repository: ImagesRepository) : ViewModel() {
 
-    lateinit var photo: UnsplashPhoto
+    lateinit var image: UnsplashImage
     val isFavoriteStream = MutableStateFlow<Boolean?>(null)
 
-    fun init(photo: UnsplashPhoto) {
-        this.photo = photo
+    fun init(image: UnsplashImage) {
+        this.image = image
         viewModelScope.launch {
-            repository.checkPhotoIsAdded(photo)
+            repository.checkIsAddedToFavs(image)
                 .collectLatest {
                     isFavoriteStream.emit(it)
                 }
@@ -32,9 +32,9 @@ class FullscreenImageViewModel(private val repository: PhotosRepository) : ViewM
         viewModelScope.launch {
             val isFavorite = isFavoriteStream.value ?: false
             if (isFavorite) {
-                repository.removeFromFavorites(photo)
+                repository.removeFromFavorites(image)
             } else {
-                repository.addToFavorites(photo)
+                repository.addToFavorites(image)
             }
             isFavoriteStream.emit(!isFavorite)
         }
@@ -45,7 +45,7 @@ class FullscreenImageViewModel(private val repository: PhotosRepository) : ViewM
      */
     fun trackDownloads() {
         viewModelScope.launch {
-            photo.links.download_location?.also { url ->
+            image.links.download_location?.also { url ->
                 repository.trackDownload(url)
             }
         }
@@ -59,7 +59,7 @@ class FullscreenImageViewModel(private val repository: PhotosRepository) : ViewM
                     modelClass: Class<T>,
                     handle: SavedStateHandle
                 ): T {
-                    val repository = PhotosRepository.create(PhotoDatabase.getInstance(fragment.requireContext()))
+                    val repository = ImagesRepository.create(ImageDatabase.getInstance(fragment.requireContext()))
                     if (modelClass.isAssignableFrom(FullscreenImageViewModel::class.java)) {
                         @Suppress("UNCHECKED_CAST")
                         return FullscreenImageViewModel(repository) as T

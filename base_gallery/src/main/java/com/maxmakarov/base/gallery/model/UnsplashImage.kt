@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = "favorites")
-data class UnsplashPhoto(
+data class UnsplashImage(
     @PrimaryKey val id: String,
     val created_at: String,
     val width: Int,
