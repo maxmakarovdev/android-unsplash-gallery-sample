@@ -5,24 +5,28 @@ import androidx.paging.PagingState
 import com.maxmakarov.base.gallery.api.UnsplashApi
 import com.maxmakarov.base.gallery.data.PhotosRepository.Companion.PAGE_SIZE
 import com.maxmakarov.base.gallery.model.UnsplashPhoto
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 
-class SearchPhotoDataSource(
+class SearchPhotoPagingSource(
     private val api: UnsplashApi,
     private val query: String
 ) : PagingSource<Int, UnsplashPhoto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UnsplashPhoto> {
-        val page = params.key ?: STARTING_PAGE_INDEX
         return try {
-            val response = api.searchPhotos(query, page, params.loadSize)
-            val photosList = response.results
-            LoadResult.Page(
-                data = photosList,
-                prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
-                nextKey = if (photosList.isEmpty()) null else page + params.loadSize / PAGE_SIZE
-            )
+            withContext(Dispatchers.Default) {
+                val page = params.key ?: STARTING_PAGE_INDEX
+                val response = api.searchPhotos(query, page, params.loadSize)
+                val photosList = response.results
+                LoadResult.Page(
+                    data = photosList,
+                    prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
+                    nextKey = if (photosList.isEmpty()) null else page + params.loadSize / PAGE_SIZE
+                )
+            }
         } catch (exception: IOException) {
             return LoadResult.Error(exception)
         } catch (exception: HttpException) {

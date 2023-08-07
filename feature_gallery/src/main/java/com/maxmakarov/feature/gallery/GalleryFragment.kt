@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.marginTop
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.maxmakarov.base.gallery.ui.BaseGalleryFragment
@@ -46,7 +48,6 @@ class GalleryFragment : BaseGalleryFragment<GalleryFragmentBinding>() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     val alignLowerBound = max(0, dy - search.translationY.toInt())
                     val alignUpperBound = -min(alignLowerBound, search.height + search.marginTop * 2)
-
                     search.translationY = alignUpperBound.toFloat()
                 }
             })
@@ -74,10 +75,11 @@ class GalleryFragment : BaseGalleryFragment<GalleryFragmentBinding>() {
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             uiState
                 .map { it.query }
                 .distinctUntilChanged()
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect {
                     search.setText(it)
                     search.setSelection(search.length())

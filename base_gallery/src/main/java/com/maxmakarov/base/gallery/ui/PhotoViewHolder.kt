@@ -18,7 +18,7 @@ class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.V
 
     init {
         view.setOnClickListener {
-            photo?.also { callback.onClick(it) }
+            photo?.also { callback.onClick(photoView, it) }
         }
     }
 
@@ -26,6 +26,7 @@ class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.V
         if (photo != null) {
             this.photo = photo
 
+            photoView.transitionName = photo.id
             photoView.aspectRatio = photo.height.toDouble() / photo.width.toDouble()
             val bitmap = BlurHashDecoder.decode(photo.blur_hash, 20, 20)
             photoView.load(photo.urls.regular) {
@@ -43,6 +44,6 @@ class PhotoViewHolder(view: View, callback: PhotoClickCallback) : RecyclerView.V
     }
 
     interface PhotoClickCallback {
-        fun onClick(photo: UnsplashPhoto)
+        fun onClick(imageView: View, photo: UnsplashPhoto)
     }
 }

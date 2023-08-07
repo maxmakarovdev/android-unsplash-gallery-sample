@@ -5,22 +5,26 @@ import androidx.paging.PagingState
 import com.maxmakarov.base.gallery.api.UnsplashApi
 import com.maxmakarov.base.gallery.data.PhotosRepository.Companion.PAGE_SIZE
 import com.maxmakarov.base.gallery.model.UnsplashPhoto
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 
 class LoadPhotoPagingSource(private val api: UnsplashApi) : PagingSource<Int, UnsplashPhoto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UnsplashPhoto> {
-        val page = params.key ?: STARTING_PAGE_INDEX
         return try {
-            val photosList = api.loadPhotos(page, params.loadSize)
-            //todo response.headers().get("x-ratelimit-remaining")?.toInt()?
+            withContext(Dispatchers.Default) {
+                val page = params.key ?: STARTING_PAGE_INDEX
+                val photosList = api.loadPhotos(page, params.loadSize)
+                //todo response.headers().get("x-ratelimit-remaining")?.toInt()?
 //            lastPage = response.headers().get("x-total")?.toInt()?.div(params.requestedLoadSize)
-            LoadResult.Page(
-                data = photosList,
-                prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
-                nextKey = if (photosList.isEmpty()) null else page + params.loadSize / PAGE_SIZE
-            )
+                LoadResult.Page(
+                    data = photosList,
+                    prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
+                    nextKey = if (photosList.isEmpty()) null else page + params.loadSize / PAGE_SIZE
+                )
+            }
         } catch (exception: IOException) {
             return LoadResult.Error(exception)
         } catch (exception: HttpException) {

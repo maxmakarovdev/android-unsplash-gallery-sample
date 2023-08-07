@@ -12,9 +12,7 @@ import androidx.paging.map
 import com.maxmakarov.base.gallery.data.PhotosRepository
 import com.maxmakarov.base.gallery.db.PhotoDatabase
 import com.maxmakarov.base.gallery.ui.UiModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class FavouritesViewModel(repository: PhotosRepository) : ViewModel() {
@@ -23,7 +21,6 @@ class FavouritesViewModel(repository: PhotosRepository) : ViewModel() {
 
     init {
         pagingDataFlow = repository.getFavorites()
-            .flowOn(Dispatchers.IO)
             .map { pagingData -> pagingData.map { UiModel.PhotoItem(it) as UiModel } }
             .cachedIn(viewModelScope)
     }

@@ -181,5 +181,4 @@ object BlurHashDecoder {
     )
         .mapIndexed { i, c -> c to i }
         .toMap()
-
 }

@@ -6,8 +6,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.paging.LoadState
@@ -32,7 +35,7 @@ abstract class BaseGalleryFragment<VB : ViewBinding> : BaseFragment<VB>() {
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
     private val adapterCallback = object : PhotoViewHolder.PhotoClickCallback {
-        override fun onClick(photo: UnsplashPhoto) {
+        override fun onClick(imageView: View, photo: UnsplashPhoto) {
             PhotosRepository.photoToView = photo
             val request = NavDeepLinkRequest.Builder
                 .fromUri("android-app://com.maxmakarov.gallery/image_view_fragment".toUri())
@@ -45,7 +48,9 @@ abstract class BaseGalleryFragment<VB : ViewBinding> : BaseFragment<VB>() {
                         exit = android.R.animator.fade_out
                     }
                 },
-                //todo FragmentNavigator.Extras.Builder().addSharedElement()
+                FragmentNavigatorExtras(
+                    imageView to photo.id
+                )
             )
         }
     }
@@ -68,37 +73,40 @@ abstract class BaseGalleryFragment<VB : ViewBinding> : BaseFragment<VB>() {
         list.adapter = photosAdapter
         list.layoutManager = layoutManager
 
-        lifecycleScope.launch {
-            pagingData.collectLatest(photosAdapter::submitData)
+        viewLifecycleOwner.lifecycleScope.launch {
+            pagingData
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collectLatest(photosAdapter::submitData)
         }
 
-        lifecycleScope.launch {
-            photosAdapter.loadStateFlow.collect { loadState ->
-                val isListEmpty = loadState.refresh is LoadState.NotLoading && photosAdapter.itemCount == 0
-                provideEmptyListPlaceholder().isVisible = isListEmpty
-                list.isVisible = !isListEmpty
-                provideProgressBar().isVisible = loadState.source.refresh is LoadState.Loading
+        viewLifecycleOwner.lifecycleScope.launch {
+            photosAdapter.loadStateFlow
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect { loadState ->
+                    val isListEmpty = loadState.refresh is LoadState.NotLoading && photosAdapter.itemCount == 0
+                    provideEmptyListPlaceholder().isVisible = isListEmpty
+                    list.isVisible = !isListEmpty
+                    provideProgressBar().isVisible = loadState.source.refresh is LoadState.Loading
 
-                val refreshState = loadState.source.refresh
-                if (refreshState is Error) {
-                    val message = refreshState.error.message.orEmpty()
-                    Snackbar.make(list, message, LENGTH_INDEFINITE).apply {
-                        setAction(R.string.retry) { photosAdapter.retry() }
-                        showAboveNavBar()
+                    val refreshState = loadState.source.refresh
+                    if (refreshState is Error) {
+                        val message = refreshState.error.message.orEmpty()
+                        Snackbar.make(list, message, LENGTH_INDEFINITE).apply {
+                            setAction(R.string.retry) { photosAdapter.retry() }
+                            showAboveNavBar()
+                        }
+                    }
+
+                    loadState.run {
+                        source.append as? Error ?: source.prepend as? Error ?: append as? Error
+                        ?: prepend as? Error
+                    }?.error?.also { error ->
+                        activity?.also {
+                            val message = getString(R.string.error_wooops_n1, error)
+                            Snackbar.make(list, message, Snackbar.LENGTH_SHORT).showAboveNavBar()
+                        }
                     }
                 }
-
-                val errorState = loadState.source.append as? Error
-                    ?: loadState.source.prepend as? Error
-                    ?: loadState.append as? Error
-                    ?: loadState.prepend as? Error
-                errorState?.error?.also { error ->
-                    activity?.also {
-                        val message = getString(R.string.error_wooops_n1, error)
-                        Snackbar.make(list, message, Snackbar.LENGTH_SHORT).showAboveNavBar()
-                    }
-                }
-            }
         }
     }
 }

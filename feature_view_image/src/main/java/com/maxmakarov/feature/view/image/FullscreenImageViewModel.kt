@@ -9,10 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.maxmakarov.base.gallery.data.PhotosRepository
 import com.maxmakarov.base.gallery.db.PhotoDatabase
 import com.maxmakarov.base.gallery.model.UnsplashPhoto
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class FullscreenImageViewModel(private val repository: PhotosRepository) : ViewModel() {
@@ -23,40 +21,34 @@ class FullscreenImageViewModel(private val repository: PhotosRepository) : ViewM
     fun init(photo: UnsplashPhoto) {
         this.photo = photo
         viewModelScope.launch {
-            checkIsFavorite()
+            repository.checkPhotoIsAdded(photo)
+                .collectLatest {
+                    isFavoriteStream.emit(it)
+                }
         }
     }
 
     fun favoriteClicked() {
         viewModelScope.launch {
-            val isFavorite = isFavoriteStream.value
-            repository.run { if(isFavorite == true) removeFromFavorites(photo) else addToFavorites(photo) }
-                .flowOn(Dispatchers.IO)
-                .collectLatest {
-                    checkIsFavorite()
-                }
+            val isFavorite = isFavoriteStream.value ?: false
+            if (isFavorite) {
+                repository.removeFromFavorites(photo)
+            } else {
+                repository.addToFavorites(photo)
+            }
+            isFavoriteStream.emit(!isFavorite)
         }
     }
 
-    private suspend fun checkIsFavorite() {
-        repository.checkPhotoIsAdded(photo)
-            .flowOn(Dispatchers.IO)
-            .collectLatest {
-                isFavoriteStream.emit(it)
-            }
-    }
-
     /**
-     * To abide by the API guidelines, you need to trigger a GET request to this endpoint
-     * every time your application performs a download of a photo
+     * To abide by the API guidelines, it needed to be triggered on each download
      */
-
-    fun trackDownloads() { //todo
-//        viewModelScope.launch {
-//            repository.trackDownload(photo.links.download_location)
-//                .flowOn(Dispatchers.IO)
-//                .collect()
-//        }
+    fun trackDownloads() {
+        viewModelScope.launch {
+            photo.links.download_location?.also { url ->
+                repository.trackDownload(url)
+            }
+        }
     }
 
     companion object {

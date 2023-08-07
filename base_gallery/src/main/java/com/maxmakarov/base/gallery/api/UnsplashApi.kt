@@ -27,6 +27,7 @@ interface UnsplashApi {
 
     companion object {
         private const val BASE_URL = "https://api.unsplash.com/"
-        fun create() = RetrofitFactory.createRetrofitBuilder(BASE_URL).create(UnsplashApi::class.java)
+        fun create(): UnsplashApi =
+            RetrofitFactory.createRetrofitBuilder(BASE_URL).create(UnsplashApi::class.java)
     }
 }

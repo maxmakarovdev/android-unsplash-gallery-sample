@@ -19,8 +19,8 @@ class SettingsFragment : BaseFragment<SettingsFragmentBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            binding.root.postDelayed(1000) {
-                TransitionManager.beginDelayedTransition(binding.root)
+            root.postDelayed(500) {
+                TransitionManager.beginDelayedTransition(root)
                 nothingHere.isVisible = true
             }
         }

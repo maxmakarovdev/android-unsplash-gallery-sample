@@ -23,8 +23,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.transition.TransitionInflater
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -69,6 +72,11 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(ctx).inflateTransition(android.R.transition.move)
+    }
+
     override fun onStart() {
         super.onStart()
         context?.registerReceiver(
@@ -98,27 +106,33 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
             info.setOnClickListener { toggleInfo() }
 
             bindFavorite()
-            imageView.load(photo.urls.full)
+            imageView.transitionName = photo.id
+            loadImage(photo)
             bottomSheet.state = STATE_HIDDEN
             bindInfo(photo)
         }
     }
 
     private fun bindFavorite() {
-        lifecycleScope.launch {
-            viewModel.isFavoriteStream.collectLatest {
-                binding.favorite.setIconResource(
-                    if (it == true) R.drawable.ic_star_24 else R.drawable.ic_star_outline_24
-                )
-            }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isFavoriteStream
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collectLatest {
+                    binding.favorite.setIconResource(
+                        if (it == true) R.drawable.ic_star_24 else R.drawable.ic_star_outline_24
+                    )
+                }
         }
 
-        lifecycleScope.launch {
-            viewModel.isFavoriteStream.drop(2).collectLatest {
-                if (it == true) {
-                    hostActivity?.setFavouritesBadge(isVisible = true)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isFavoriteStream
+                .drop(2)
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collectLatest {
+                    if (it == true) {
+                        hostActivity?.setFavouritesBadge(isVisible = true)
+                    }
                 }
-            }
         }
     }
 
@@ -155,6 +169,10 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             startActivity(this)
         }
+    }
+
+    private fun loadImage(photo: UnsplashPhoto) {
+        binding.imageView.load(photo.urls.full)
     }
 
     @SuppressLint("SetTextI18n")
@@ -203,7 +221,7 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
 
     private fun transformDate(date: String): String {
         return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
-            .parse(date)!!
-            .let { DateFormat.getDateFormat(ctx).format(it) }
+            .parse(date)
+            ?.let { DateFormat.getDateFormat(ctx).format(it) } ?: ""
     }
 }
