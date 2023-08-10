@@ -46,8 +46,8 @@ class GalleryViewModel @Inject constructor(
         val actionStateFlow = MutableSharedFlow<UiAction>()
         val searches = actionStateFlow
             .filterIsInstance<UiAction.Search>()
-            .distinctUntilChanged()
             .onStart { emit(UiAction.Search(query = "")) }
+            .distinctUntilChanged()
 
         pagingDataFlow = searches
             .flatMapLatest { if (it.query.isBlank()) loadImages() else searchImages(it.query) }

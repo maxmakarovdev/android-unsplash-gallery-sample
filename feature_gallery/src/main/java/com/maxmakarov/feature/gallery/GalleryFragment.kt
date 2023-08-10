@@ -95,10 +95,8 @@ class GalleryFragment : BaseGalleryFragment<GalleryFragmentBinding>() {
 
     private inline fun GalleryFragmentBinding.updateListFromInput(onQueryChanged: (UiAction.Search) -> Unit) {
         search.text.trim().let {
-            if (it.isNotEmpty()) {
-                list.smoothScrollToPosition(0)
-                onQueryChanged(UiAction.Search(query = it.toString()))
-            }
+            list.smoothScrollToPosition(0)
+            onQueryChanged(UiAction.Search(query = it.toString()))
         }
     }
 }
