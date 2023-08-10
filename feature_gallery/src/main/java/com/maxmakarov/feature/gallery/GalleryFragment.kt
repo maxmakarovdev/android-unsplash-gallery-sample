@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.isVisible
 import androidx.core.view.marginTop
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -75,6 +76,9 @@ class GalleryFragment : BaseGalleryFragment<GalleryFragmentBinding>() {
                 false
             }
         }
+        searchClear.setOnClickListener {
+            onQueryChanged(UiAction.Search(query = ""))
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             uiState
@@ -84,6 +88,7 @@ class GalleryFragment : BaseGalleryFragment<GalleryFragmentBinding>() {
                 .collect {
                     search.setText(it)
                     search.setSelection(search.length())
+                    searchClear.isVisible = it.isNotEmpty()
                 }
         }
     }

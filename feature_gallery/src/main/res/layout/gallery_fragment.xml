@@ -27,13 +27,12 @@
         android:layout_marginTop="4dp"
         android:autofillHints=""
         android:background="@drawable/bg_search"
-        android:drawableStart="@drawable/ic_search_24"
-        android:drawablePadding="4dp"
         android:elevation="16dp"
         android:hint="@string/search_hint"
         android:imeOptions="actionSearch"
         android:inputType="textNoSuggestions"
         android:paddingHorizontal="8dp"
+        android:paddingStart="32dp"
         android:selectAllOnFocus="true"
         android:textColor="@color/grey_900"
         android:textColorHint="@color/grey_500"
@@ -41,10 +40,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/searchIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:elevation="20dp"
+        android:importantForAccessibility="no"
+        android:padding="6dp"
+        android:src="@drawable/ic_search_24"
+        android:tintMode="src_in"
+        app:layout_constraintBottom_toBottomOf="@id/search"
+        app:layout_constraintStart_toStartOf="@id/search"
+        app:layout_constraintTop_toTopOf="@id/search"
+        app:tint="@color/grey_800" />
+
+    <ImageView
+        android:id="@+id/searchClear"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:elevation="20dp"
+        android:importantForAccessibility="no"
+        android:padding="6dp"
+        android:src="@drawable/ic_cancel_24"
+        android:tintMode="src_in"
+        app:layout_constraintBottom_toBottomOf="@id/search"
+        app:layout_constraintEnd_toEndOf="@id/search"
+        app:layout_constraintTop_toTopOf="@id/search"
+        app:tint="@color/grey_800" />
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_progress"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
