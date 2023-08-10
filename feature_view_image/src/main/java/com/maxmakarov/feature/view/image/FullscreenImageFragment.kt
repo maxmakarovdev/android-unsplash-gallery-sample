@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -36,21 +37,21 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_LONG
 import com.google.android.material.snackbar.Snackbar
-import com.maxmakarov.base.gallery.data.ImagesRepository
+import com.maxmakarov.base.gallery.data.ImagesRepositoryImpl
 import com.maxmakarov.base.gallery.model.UnsplashImage
 import com.maxmakarov.core.ui.BaseFragment
 import com.maxmakarov.feature.view.image.databinding.FullscreenImageFragmentBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
-import kotlin.LazyThreadSafetyMode.NONE
 
-
+@AndroidEntryPoint
 class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
 
-    private val viewModel by lazy(NONE){ FullscreenImageViewModel.get(this) }
+    private val viewModel: FullscreenImageViewModel by viewModels()
 
     private val ctx get() = requireActivity()
     private val bottomSheet by lazy { BottomSheetBehavior.from(binding.infoBottomSheet.root) }
@@ -96,7 +97,7 @@ class FullscreenImageFragment : BaseFragment<FullscreenImageFragmentBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val image: UnsplashImage = ImagesRepository.imageToView!!
+        val image: UnsplashImage = ImagesRepositoryImpl.imageToView!!
         viewModel.init(image)
         binding.apply {
             back.setOnClickListener { findNavController().popBackStack() }

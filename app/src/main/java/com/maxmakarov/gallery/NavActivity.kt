@@ -9,7 +9,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.maxmakarov.core.ui.BaseNavActivity
 import com.maxmakarov.gallery.databinding.NavActivityBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NavActivity : BaseNavActivity() {
 
     private lateinit var binding: NavActivityBinding

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.marginTop
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,18 +16,18 @@ import com.maxmakarov.base.gallery.ui.BaseGalleryFragment
 import com.maxmakarov.base.gallery.ui.UiAction
 import com.maxmakarov.base.gallery.ui.UiState
 import com.maxmakarov.feature.gallery.databinding.GalleryFragmentBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlin.LazyThreadSafetyMode.NONE
 import kotlin.math.max
 import kotlin.math.min
 
-
+@AndroidEntryPoint
 class GalleryFragment : BaseGalleryFragment<GalleryFragmentBinding>() {
 
-    private val viewModel by lazy(NONE){ GalleryViewModel.get(this) }
+    private val viewModel: GalleryViewModel by viewModels()
 
     override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): GalleryFragmentBinding {
         return GalleryFragmentBinding.inflate(inflater, container, false)

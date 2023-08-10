@@ -27,7 +27,7 @@ Work in progress
   * Single Activity
   * Multi-module
   * Android Architecture Components (ViewModel, Navigation, Lifecycle)
-  * [WIP] Dagger/Hilt DI
+  * Dagger/Hilt DI
 * UI
   * [WIP] Jetpack Compose
   * Material Design 3 components
@@ -65,7 +65,7 @@ Work in progress
 - [x] Load the image list with Retrofit, Coroutines/Flow and Paging 3 library
 - [x] Room database for storing favorite images
 - [x] Multi-module
-- [ ] Dagger/Hilt
+- [x] Dagger/Hilt
 - [ ] Unit tests
 - [ ] Jetpack Compose
 

@@ -23,7 +23,7 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_INDEFINITE
 import com.google.android.material.snackbar.Snackbar
 import com.maxmakarov.base.gallery.R
-import com.maxmakarov.base.gallery.data.ImagesRepository
+import com.maxmakarov.base.gallery.data.ImagesRepositoryImpl
 import com.maxmakarov.base.gallery.model.UnsplashImage
 import com.maxmakarov.core.ui.BaseFragment
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +36,7 @@ abstract class BaseGalleryFragment<VB : ViewBinding> : BaseFragment<VB>() {
 
     private val adapterCallback = object : ImageViewHolder.ImageClickCallback {
         override fun onClick(imageView: View, image: UnsplashImage) {
-            ImagesRepository.imageToView = image
+            ImagesRepositoryImpl.imageToView = image
             val request = NavDeepLinkRequest.Builder
                 .fromUri("android-app://com.maxmakarov.gallery/image_view_fragment".toUri())
                 .build()

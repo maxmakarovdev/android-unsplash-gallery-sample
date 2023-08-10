@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt' //ksp currently doesn't support Hilt
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -13,13 +15,13 @@ android {
         //noinspection OldTargetApi
         targetSdk 33
         versionCode 1
-        versionName "0.7"
+        versionName "0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        def secretKeys = getSecretKeys()
+        def secretKeys = loadSecretKeys()
 
         release {
             minifyEnabled false
@@ -55,9 +57,12 @@ dependencies {
     implementation(project(":feature_favorites"))
     implementation(project(":feature_settings"))
     implementation(project(":feature_view_image"))
+
+    kapt "com.google.dagger:hilt-compiler:2.44"
+    api "com.google.dagger:hilt-android:2.44"
 }
 
-def getSecretKeys() {
+def loadSecretKeys() {
     def keyFile = file("../unsplash.keys")
     def secretKeys = new Properties()
     secretKeys.load(new FileInputStream(keyFile))

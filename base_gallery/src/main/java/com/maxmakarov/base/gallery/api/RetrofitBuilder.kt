@@ -1,22 +1,22 @@
-package com.maxmakarov.core
+package com.maxmakarov.base.gallery.api
 
+import com.maxmakarov.core.Config
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.logging.HttpLoggingInterceptor.Level
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-/**
- * Factory for manual DI to avoid sticking to a specific DI library.
- *
- */
-object RetrofitFactory {
+class RetrofitBuilder {
 
-    private const val HEADER_CONTENT_TYPE = "Content-Type"
-    private const val HEADER_ACCEPT_VERSION = "Accept-Version"
-    private const val HEADER_AUTHORIZATION = "Authorization"
+    fun build(baseUrl: String): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .client(createHttpClient())
+            .build()
+    }
 
     private fun createHeaderInterceptor(): Interceptor {
         return Interceptor { chain ->
@@ -30,7 +30,7 @@ object RetrofitFactory {
     }
 
     private fun createLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply { level = Level.BODY }
+        return HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
     }
 
     private fun createHttpClient(): OkHttpClient {
@@ -45,11 +45,9 @@ object RetrofitFactory {
         return builder.build()
     }
 
-    fun createRetrofitBuilder(baseUrl: String): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(createHttpClient())
-            .build()
+    companion object {
+        private const val HEADER_CONTENT_TYPE = "Content-Type"
+        private const val HEADER_ACCEPT_VERSION = "Accept-Version"
+        private const val HEADER_AUTHORIZATION = "Authorization"
     }
 }

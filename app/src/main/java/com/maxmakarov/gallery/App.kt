@@ -2,7 +2,9 @@ package com.maxmakarov.gallery
 
 import android.app.Application
 import com.maxmakarov.core.Config
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class App : Application() {
 
     override fun onCreate() {

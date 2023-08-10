@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt' //ksp currently doesn't support Hilt
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -34,5 +36,8 @@ android {
 
 dependencies {
     api(project(":base_gallery"))
+    kapt "com.google.dagger:hilt-compiler:2.44"
+    api "com.google.dagger:hilt-android:2.44"
+
     testApi 'junit:junit:4.13.2'
 }

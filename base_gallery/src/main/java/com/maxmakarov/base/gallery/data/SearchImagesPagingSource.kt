@@ -3,7 +3,7 @@ package com.maxmakarov.base.gallery.data
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.maxmakarov.base.gallery.api.UnsplashApi
-import com.maxmakarov.base.gallery.data.ImagesRepository.Companion.PAGE_SIZE
+import com.maxmakarov.base.gallery.data.ImagesRepositoryImpl.Companion.PAGE_SIZE
 import com.maxmakarov.base.gallery.model.UnsplashImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

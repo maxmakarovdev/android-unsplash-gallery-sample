@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
     id 'com.google.devtools.ksp' version '1.8.22-1.0.11'
+    id 'kotlin-kapt' //ksp currently doesn't support Hilt
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -37,4 +39,6 @@ android {
 dependencies {
     api(project(":core"))
     ksp "androidx.room:room-compiler:2.5.2"
+    kapt "com.google.dagger:hilt-compiler:2.44"
+    api "com.google.dagger:hilt-android:2.44"
 }

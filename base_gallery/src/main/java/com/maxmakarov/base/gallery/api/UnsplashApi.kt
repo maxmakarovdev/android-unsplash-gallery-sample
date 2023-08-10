@@ -1,7 +1,6 @@
 package com.maxmakarov.base.gallery.api
 
 import com.maxmakarov.base.gallery.model.UnsplashImage
-import com.maxmakarov.core.RetrofitFactory
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -24,10 +23,4 @@ interface UnsplashApi {
 
     @GET
     suspend fun trackDownload(@Url url: String): Response<Any>
-
-    companion object {
-        private const val BASE_URL = "https://api.unsplash.com/"
-        fun create(): UnsplashApi =
-            RetrofitFactory.createRetrofitBuilder(BASE_URL).create(UnsplashApi::class.java)
-    }
 }

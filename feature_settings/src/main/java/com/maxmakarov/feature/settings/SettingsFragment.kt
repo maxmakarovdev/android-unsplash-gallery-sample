@@ -9,7 +9,9 @@ import androidx.core.view.postDelayed
 import androidx.transition.TransitionManager
 import com.maxmakarov.core.ui.BaseFragment
 import com.maxmakarov.feature.settings.databinding.SettingsFragmentBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingsFragment : BaseFragment<SettingsFragmentBinding>() {
 
     override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): SettingsFragmentBinding {
