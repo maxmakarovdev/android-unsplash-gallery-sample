@@ -9,39 +9,42 @@
 
 
 ## App description
-
 <p>
   <img src="screenshots/screenshot_gallery.jpg" width="250" />
   <img src="screenshots/screenshot_image.jpg" width="250" />
   <img src="screenshots/screenshot_favorites.jpg" width="250" />
 </p>
 
+//todo description
 
 ## Tech stack
 
-* Kotlin
-   * Coroutines
-   * Flow
+* [Kotlin](https://kotlinlang.org/)
+   * [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html)
+   * [Flow](https://kotlinlang.org/docs/flow.html)
 * Architecture
-  * MVVM + MVI + Repository Pattern
-  * Single Activity
-  * Multi-module
-  * Android Architecture Components (ViewModel, Navigation, Lifecycle)
-  * Dagger/Hilt DI
+  * [MVVM + MVI + Repository Pattern](https://developer.android.com/topic/architecture/recommendations)
+  * [Single Activity](https://developer.android.com/topic/architecture/recommendations)
+  * [Multi-module](https://developer.android.com/topic/modularization)
+  * [Android Architecture components](https://developer.android.com/topic/libraries/architecture) ([ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel), [Navigation](https://developer.android.com/topic/libraries/architecture/navigation/), [Lifecycle](https://developer.android.com/topic/libraries/architecture/lifecycle))
+  * [Dagger/Hilt DI](https://developer.android.com/training/dependency-injection/hilt-android)
 * UI
-  * [WIP] Jetpack Compose
-  * Material Design 3 components
-  * Coil
-  * Lottie
-  * BlurHash
+  * [WIP] [Jetpack Compose](https://developer.android.com/jetpack/compose)
+  * [Material Design 3 components](https://m3.material.io/components) 
+  * [Paging library v3](https://developer.android.com/topic/libraries/architecture/paging/v3-overview)
+  * [Coil](https://github.com/coil-kt/coil)
+  * [Lottie](http://airbnb.io/lottie)
+  * [BlurHash](https://blurha.sh/)
 * Data
-  * Retrofit + OkHttp
-  * Paging 3 library
-  * Room
+  * [Retrofit](https://square.github.io/retrofit/)
+  * [OkHttp](https://square.github.io/okhttp/)
+  * [Room](https://developer.android.com/jetpack/androidx/releases/room)
 * Testing
-  * [WIP] JUnit 5 + Mockk
+  * [WIP] [JUnit 5](https://junit.org/junit5/) + [Mockk](https://mockk.io/)
+* Compiling and building
+  * [KSP](https://kotlinlang.org/docs/ksp-overview.html)
 * Code analysis
-  * [WIP] Detekt
+  * [WIP] [Detekt](https://github.com/arturbosch/detekt)
 
 
 ## Features Roadmap
@@ -72,13 +75,13 @@
 
 ## Minor tasks and enhancements 
 
-* Add info in README.md
 * Handle multiple backstacks navigation https://developer.android.com/guide/navigation/backstack/multi-back-stacks
 * Display a number of requests left (X-Ratelimit-Remaining)
 * Error handling
 * Gradle improvements
 * Animations (Image opening, ...)
 * Fonts
+* Add more info in the README.md
 
 
 ## Known issues
