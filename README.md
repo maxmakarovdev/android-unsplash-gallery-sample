@@ -10,11 +10,11 @@
 
 ## App description
 
-Work in progress
-
-![Work in progress](https://unsplash.com/photos/NoOrDKxUfzo/download?ixid=M3wxMjA3fDB8MXxzZWFyY2h8Mnx8dW5kZXIlMjBjb25zdHJ1Y3Rpb258ZW58MHx8fHwxNjg5NjA4Mjg1fDA&force=true&w=2400)
-
-//todo add description/motivation & screenshots/video
+<p>
+  <img src="screenshots/screenshot_gallery.jpg" width="250" />
+  <img src="screenshots/screenshot_image.jpg" width="250" />
+  <img src="screenshots/screenshot_favorites.jpg" width="250" />
+</p>
 
 
 ## Tech stack
