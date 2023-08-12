@@ -6,9 +6,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.maxmakarov.base.gallery.data.ImagesRepository
-import com.maxmakarov.base.gallery.ui.UiAction
-import com.maxmakarov.base.gallery.ui.UiModel
-import com.maxmakarov.base.gallery.ui.UiState
+import com.maxmakarov.base.gallery.ui.list.ImageAdapterItem
+import com.maxmakarov.core.ui.list.AdapterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +34,7 @@ class GalleryViewModel @Inject constructor(
      */
     val state: StateFlow<UiState>
 
-    val pagingDataFlow: Flow<PagingData<UiModel>>
+    val pagingDataFlow: Flow<PagingData<AdapterItem>>
 
     /**
      * Processor of side effects from the UI which in turn feedback into [state]
@@ -63,11 +62,13 @@ class GalleryViewModel @Inject constructor(
         accept = { action -> viewModelScope.launch { actionStateFlow.emit(action) } }
     }
 
-    private fun searchImages(queryString: String): Flow<PagingData<UiModel>> =
+    private fun searchImages(queryString: String): Flow<PagingData<AdapterItem>> =
         repository.searchImagesStream(queryString)
-            .map { pagingData -> pagingData.map { UiModel.ImageItem(it) } }
+            .map { pagingData -> pagingData.map { ImageAdapterItem(it) } }
 
-    private fun loadImages(): Flow<PagingData<UiModel>> =
+    private fun loadImages(): Flow<PagingData<AdapterItem>> =
         repository.loadImagesStream()
-            .map { pagingData -> pagingData.map { UiModel.ImageItem(it) } }
+            .map { pagingData ->
+                pagingData.map { ImageAdapterItem(it) }
+            }
 }

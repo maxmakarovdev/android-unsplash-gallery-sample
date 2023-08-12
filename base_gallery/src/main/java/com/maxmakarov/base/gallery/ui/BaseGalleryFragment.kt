@@ -25,37 +25,22 @@ import com.google.android.material.snackbar.Snackbar
 import com.maxmakarov.base.gallery.R
 import com.maxmakarov.base.gallery.data.ImagesRepositoryImpl
 import com.maxmakarov.base.gallery.model.UnsplashImage
+import com.maxmakarov.base.gallery.ui.list.ImageAdapterDelegate
+import com.maxmakarov.core.ui.list.DelegateAdapter
 import com.maxmakarov.core.ui.BaseFragment
+import com.maxmakarov.core.ui.list.AdapterItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 abstract class BaseGalleryFragment<VB : ViewBinding> : BaseFragment<VB>() {
-    private lateinit var imagesAdapter: ImagesAdapter
+
     private lateinit var layoutManager: StaggeredGridLayoutManager
+    private val adapter = DelegateAdapter.with(
+        ImageAdapterDelegate { binding, item -> openImage(binding.image, item.image) }
+    )
 
-    private val adapterCallback = object : ImageViewHolder.ImageClickCallback {
-        override fun onClick(imageView: View, image: UnsplashImage) {
-            ImagesRepositoryImpl.imageToView = image
-            val request = NavDeepLinkRequest.Builder
-                .fromUri("android-app://com.maxmakarov.gallery/image_view_fragment".toUri())
-                .build()
-            findNavController().navigate(
-                request,
-                navOptions {
-                    anim {
-                        enter = android.R.animator.fade_in
-                        exit = android.R.animator.fade_out
-                    }
-                },
-                FragmentNavigatorExtras(
-                    imageView to image.id
-                )
-            )
-        }
-    }
-
-    abstract fun provideData(): Flow<PagingData<UiModel>>
+    abstract fun provideData(): Flow<PagingData<AdapterItem>>
     abstract fun provideList(): RecyclerView
     abstract fun provideProgressBar(): View
     abstract fun provideEmptyListPlaceholder(): View
@@ -65,25 +50,43 @@ abstract class BaseGalleryFragment<VB : ViewBinding> : BaseFragment<VB>() {
         bindList(provideList(), provideData())
     }
 
+    private fun openImage(view: View, image: UnsplashImage){
+        ImagesRepositoryImpl.imageToView = image
+        val request = NavDeepLinkRequest.Builder
+            .fromUri("android-app://com.maxmakarov.gallery/image_view_fragment".toUri())
+            .build()
+        findNavController().navigate(
+            request,
+            navOptions {
+                anim {
+                    enter = android.R.animator.fade_in
+                    exit = android.R.animator.fade_out
+                }
+            },
+            FragmentNavigatorExtras(
+                view to image.id
+            )
+        )
+    }
+
     @SuppressLint("ShowToast")
-    private fun bindList(list: RecyclerView, pagingData: Flow<PagingData<UiModel>>) {
-        imagesAdapter = ImagesAdapter(adapterCallback)
+    private fun bindList(list: RecyclerView, pagingData: Flow<PagingData<AdapterItem>>) {
         val spanCount = if (resources.configuration.orientation == ORIENTATION_LANDSCAPE) 3 else 2
         layoutManager = StaggeredGridLayoutManager(spanCount, LinearLayoutManager.VERTICAL)
-        list.adapter = imagesAdapter
+        list.adapter = adapter
         list.layoutManager = layoutManager
 
         viewLifecycleOwner.lifecycleScope.launch {
             pagingData
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collectLatest(imagesAdapter::submitData)
+                .collectLatest(adapter::submitData)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            imagesAdapter.loadStateFlow
+            adapter.loadStateFlow
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
                 .collect { loadState ->
-                    val isListEmpty = loadState.refresh is LoadState.NotLoading && imagesAdapter.itemCount == 0
+                    val isListEmpty = loadState.refresh is LoadState.NotLoading && adapter.itemCount == 0
                     provideEmptyListPlaceholder().isVisible = isListEmpty
                     list.isVisible = !isListEmpty
                     provideProgressBar().isVisible = loadState.source.refresh is LoadState.Loading
@@ -92,7 +95,7 @@ abstract class BaseGalleryFragment<VB : ViewBinding> : BaseFragment<VB>() {
                     if (refreshState is Error) {
                         val message = refreshState.error.message.orEmpty()
                         Snackbar.make(list, message, LENGTH_INDEFINITE).apply {
-                            setAction(R.string.retry) { imagesAdapter.retry() }
+                            setAction(R.string.retry) { adapter.retry() }
                             showAboveNavBar()
                         }
                     }

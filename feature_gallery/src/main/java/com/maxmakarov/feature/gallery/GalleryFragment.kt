@@ -14,8 +14,6 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.maxmakarov.base.gallery.ui.BaseGalleryFragment
-import com.maxmakarov.base.gallery.ui.UiAction
-import com.maxmakarov.base.gallery.ui.UiState
 import com.maxmakarov.feature.gallery.databinding.GalleryFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.StateFlow
