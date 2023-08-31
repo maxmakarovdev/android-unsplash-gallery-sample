@@ -2,19 +2,19 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
-    id 'com.google.devtools.ksp' version '1.8.22-1.0.11'
+    id 'com.google.devtools.ksp' version '1.9.10-1.0.13'
     id 'kotlin-kapt' //ksp currently doesn't support Hilt
     id 'com.google.dagger.hilt.android'
 }
 
 android {
     namespace 'com.maxmakarov.base.gallery'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         minSdk 24
         //noinspection OldTargetApi
-        targetSdk 33
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,6 +39,8 @@ android {
 dependencies {
     api(project(":core"))
     ksp "androidx.room:room-compiler:2.5.2"
-    kapt "com.google.dagger:hilt-compiler:2.44"
-    api "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.47"
+    api "com.google.dagger:hilt-android:2.47"
+
+    testApi 'junit:junit:4.13.2'
 }

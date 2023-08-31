@@ -1,8 +1,10 @@
 # Android Unsplash gallery (sample project)
 
-[![Kotlin Version](https://img.shields.io/badge/Kotlin-1.8.x-blue.svg)](https://kotlinlang.org)
-[![AGP](https://img.shields.io/badge/AGP-8.x-blue?style=flat)](https://developer.android.com/studio/releases/gradle-plugin)
-[![Gradle](https://img.shields.io/badge/Gradle-8.x-blue?style=flat)](https://gradle.org)
+[![Kotlin Version](https://img.shields.io/badge/Kotlin-1.9.10-7F52FF?style=for-the-badge&logo=kotlin)](https://kotlinlang.org)
+[![AGP](https://img.shields.io/badge/AGP-8.1.1-3DDC84?style=for-the-badge&logo=androidstudio)](https://developer.android.com/studio/releases/gradle-plugin)
+[![Gradle](https://img.shields.io/badge/Gradle-8.3-999999?style=for-the-badge&logo=gradle)](https://gradle.org)
+[![TargetSdk](https://img.shields.io/badge/Target%20SDK-34-3DDC84?style=for-the-badge&logo=android)](https://developer.android.com/about/versions/14)
+
 
 [![CodeFactor](https://www.codefactor.io/repository/github/maxmakarovdev/android-unsplash-gallery-sample/badge)](https://www.codefactor.io/repository/github/maxmakarovdev/android-unsplash-gallery-sample)
 [![Codebeat Badge](https://codebeat.co/badges/c95841e4-1bd9-41ea-965b-1c451fe5697f)](https://codebeat.co/projects/github-com-maxmakarovdev-android-unsplash-gallery-sample-master)

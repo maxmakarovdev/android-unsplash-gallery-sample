@@ -7,13 +7,13 @@ plugins {
 
 android {
     namespace 'com.maxmakarov.gallery'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.maxmakarov.gallery"
         minSdk 26
         //noinspection OldTargetApi
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "0.8"
 
@@ -48,7 +48,7 @@ android {
         buildConfig true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.8'
+        kotlinCompilerExtensionVersion '1.5.3'
     }
 }
 
@@ -58,8 +58,8 @@ dependencies {
     implementation(project(":feature_settings"))
     implementation(project(":feature_view_image"))
 
-    kapt "com.google.dagger:hilt-compiler:2.44"
-    api "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.47"
+    api "com.google.dagger:hilt-android:2.47"
 }
 
 def loadSecretKeys() {
