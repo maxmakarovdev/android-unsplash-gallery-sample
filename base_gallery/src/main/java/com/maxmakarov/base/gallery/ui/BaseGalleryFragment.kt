@@ -37,7 +37,7 @@ abstract class BaseGalleryFragment<VB : ViewBinding> : BaseFragment<VB>() {
 
     private lateinit var layoutManager: StaggeredGridLayoutManager
     private val adapter = DelegateAdapter.with(
-        ImageAdapterDelegate { binding, item -> openImage(binding.image, item.image) }
+        ImageAdapterDelegate { binding, item -> openImage(item.image, binding.image) }
     )
 
     abstract fun provideData(): Flow<PagingData<AdapterItem>>

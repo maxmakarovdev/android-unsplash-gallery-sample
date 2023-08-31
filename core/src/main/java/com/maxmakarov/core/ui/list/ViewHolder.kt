@@ -3,9 +3,9 @@ package com.maxmakarov.core.ui.list
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 
-class ViewHolder<VB : ViewBinding, I : AdapterItem>(
+class ViewHolder<I : AdapterItem, VB : ViewBinding>(
     private val binding: VB,
-    onClick: (VB, I) -> Unit = { _, _ -> }
+    onClick: (I, VB) -> Unit = { _, _ -> }
 ): RecyclerView.ViewHolder(binding.root) {
 
     private var bound: I? = null
@@ -13,7 +13,7 @@ class ViewHolder<VB : ViewBinding, I : AdapterItem>(
     init {
         binding.root.setOnClickListener {
             bound?.also { item ->
-                onClick(binding, item)
+                onClick(item, binding)
             }
         }
     }
