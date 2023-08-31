@@ -6,8 +6,7 @@
 [![TargetSdk](https://img.shields.io/badge/Target%20SDK-34-3DDC84?style=for-the-badge&logo=android)](https://developer.android.com/about/versions/14)
 
 
-[![CodeFactor](https://www.codefactor.io/repository/github/maxmakarovdev/android-unsplash-gallery-sample/badge)](https://www.codefactor.io/repository/github/maxmakarovdev/android-unsplash-gallery-sample)
-[![Codebeat Badge](https://codebeat.co/badges/c95841e4-1bd9-41ea-965b-1c451fe5697f)](https://codebeat.co/projects/github-com-maxmakarovdev-android-unsplash-gallery-sample-master)
+[![CodeFactor](https://www.codefactor.io/repository/github/maxmakarovdev/android-unsplash-gallery-sample/badge?style=for-the-badge)](https://www.codefactor.io/repository/github/maxmakarovdev/android-unsplash-gallery-sample)
 
 
 ## App description
